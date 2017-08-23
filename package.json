@@ -4,6 +4,7 @@
   "description": "A timezone picker widget in React",
   "main": "index.js",
   "scripts": {
+    "storybook": "start-storybook -p 9001 -c .storybook",
     "test": "jest"
   },
   "repository": {
@@ -28,8 +29,9 @@
     "react-transition-group": "^2.2.0"
   },
   "devDependencies": {
-    "@kadira/storybook": "^2.35.3",
-    "@kadira/storybook-addon-knobs": "^1.7.1",
+    "@storybook/addon-actions": "^3.2.6",
+    "@storybook/addon-knobs": "3.2.8",
+    "@storybook/react": "3.2.8",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^7.2.3",
