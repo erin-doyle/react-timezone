@@ -5,7 +5,12 @@
   "main": "index.js",
   "scripts": {
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "test": "jest"
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "test": "npm run lint && npm run test:jest",
+    "test:jest": "jest",
+    "test:nocache": "jest --no-cache",
+    "test:watch": "jest --watch"
   },
   "repository": {
     "type": "git",
