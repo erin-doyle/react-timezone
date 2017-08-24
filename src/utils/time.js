@@ -2,9 +2,56 @@ import moment from 'moment-timezone';
 
 import { head, last } from './func';
 
+
 // loads moment-timezone's timezone data, which comes from the
 // IANA Time Zone Database at https://www.iana.org/time-zones
 moment.tz.load({ version: 'latest', zones: [], links: [] });
+
+const tzNames = (() => {
+    //  We want to subset the existing timezone data as much as possible, both for efficiency
+    //  and to avoid confusing the user. Here, we focus on removing reduntant timezone names
+    //  and timezone names for timezones we don't necessarily care about, like Antarctica, and
+    //  special timezone names that exist for convenience.
+    const scrubbedPrefixes = ['Antarctica', 'Arctic', 'Chile'];
+    const scrubbedSuffixes = ['ACT', 'East', 'Knox_IN', 'LHI', 'North', 'NSW', 'South', 'West'];
+
+    return moment.tz.names()
+        .filter(name => name.indexOf('/') >= 0)
+        .filter(name => !scrubbedPrefixes.indexOf(name.split('/')[0]) >= 0)
+        .filter(name => !scrubbedSuffixes.indexOf(name.split('/').slice(-1)[0]) >= 0);
+})();
+
+// We need a human-friendly city name for each timezone identifier
+// counting Canada/*, Mexico/*, and US/* allows users to search for
+// things like 'Eastern' or 'Mountain' and get matches back
+const tzCities = tzNames
+    .map(name => ((['Canada', 'Mexico', 'US'].indexOf(name.split('/')[0]) >= 0)
+        ? name : name.split('/').slice(-1)[0]))
+    .map(name => name.replace(/_/g, ' '));
+
+// Provide a mapping between a human-friendly city name and its corresponding
+// timezone identifier and timezone abbreviation as a named export.
+// We can fuzzy match on any of these.
+const tzMaps = tzCities.map((city) => {
+    const tzMap = {};
+    const tzName = tzNames[tzCities.indexOf(city)];
+
+    tzMap.city = city;
+    tzMap.zoneName = tzName;
+    tzMap.zoneAbbr = moment().tz(tzName).zoneAbbr();
+
+    return tzMap;
+});
+
+const getTzForCity = (city) => {
+    const maps = tzMaps.filter(tzMap => tzMap.city === city);
+    return head(maps);
+};
+
+const getTzForName = (name) => {
+    const maps = tzMaps.filter(tzMap => tzMap.zoneName === name);
+    return head(maps);
+};
 
 const guessUserTz = () => {
     // User-Agent sniffing is not always reliable, but is the recommended technique
@@ -38,86 +85,45 @@ const guessUserTz = () => {
 };
 
 /**
- * Create a time data object using moment.
- * If a time is provided, just format it; if not, use the current time.
- *
- * @function getValidTimeData
- * @param  {string} time          a time; defaults to now
- * @param  {string} meridiem      AM or PM; defaults to AM via moment
- * @param  {Number} timeMode      12 or 24-hour mode
- * @param  {string} tz            a timezone name; defaults to guessing a user's tz or GMT
- * @return {Object}               a key-value representation of time data
- */
-const getValidTimeData = (time, meridiem, timeMode, tz) => {
-    const validMeridiem = getValidMeridiem(meridiem);
-
-    // when we only have a valid meridiem, that implies a 12h mode
-    const mode = (validMeridiem && !timeMode) ? 12 : timeMode || 24;
-    // eslint-disable-next-line
-    const timezone = (tz) ? tz : guessUserTz().zoneName;
-
-    const validMode = getValidateTimeMode(mode);
-    const validTime = getValidTimeString(time, validMeridiem);
-    const format12 = 'hh:mmA';
-    const format24 = 'HH:mmA';
-    let time12,
-        time24;
-
-    // What format is the hour we provide to moment below in?
-    const hourFormat = (validMode === 12) ? format12 : format24;
-
-    time24 = ((validTime)
-        ? moment(`1970-01-01 ${validTime}`, `YYYY-MM-DD ${hourFormat}`, 'en').tz(timezone).format(format24)
-        : moment().tz(timezone).format(format24)).split(/:/);
-
-    time12 = ((validTime)
-        ? moment(`1970-01-01 ${validTime}`, `YYYY-MM-DD ${hourFormat}`, 'en').tz(timezone).format(format12)
-        : moment().tz(timezone).format(format12)).split(/:/);
-
-    const timeData = {
-        hour12: head(time12).replace(/^0/, ''),
-        hour24: head(time24),
-        minute: last(time24).slice(0, 2),
-        meridiem: last(time12).slice(2),
-        mode: validMode,
-        timezone
-    };
-
-    return timeData;
-};
-
-/**
- * Format the current time as a string
- * @function getCurrentTime
- * @return {string}
- */
-const getCurrentTime = () => {
-    const time = getValidTimeData();
-    return `${time.hour24}:${time.minute}`;
-};
-
-/**
  * Get an integer representation of a time.
  * @function getValidateIntTime
  * @param  {string} time
  * @return {Number}
  */
 const getValidateIntTime = (time) => {
-    if (isNaN(parseInt(time))) { return 0; }
-    return parseInt(time);
+    if (isNaN(parseInt(time, 10))) { return 0; }
+    return parseInt(time, 10);
+};
+
+/**
+ * Validate and set a sensible default for time modes.
+ * TODO: this function might not really be necessary, see getValidTimeData()
+ *
+ * @function getValidateTimeMode
+ * @param  {string|Number} timeMode
+ * @return {Number}
+ */
+const getValidateTimeMode = (timeMode) => {
+    const mode = parseInt(timeMode, 10);
+
+    if (isNaN(mode)) { return 24; }
+    if (mode !== 24 && mode !== 12) { return 24; }
+
+    return mode;
 };
 
 /**
  * Validate, set a default for, and stringify time data.
  * @function getValidateTime
- * @param {string}
+ * @param {string} time
  * @return {string}
  */
 const getValidateTime = (time) => {
-    if (typeof time === 'undefined') { time = '00'; }
-    if (isNaN(parseInt(time))) { time = '00'; }
-    if (parseInt(time) < 10) { time = `0${parseInt(time)}`; }
-    return `${time}`;
+    let timeToUse = time;
+    if (typeof timeToUse === 'undefined') { timeToUse = '00'; }
+    if (isNaN(parseInt(timeToUse, 10))) { timeToUse = '00'; }
+    if (parseInt(timeToUse, 10) < 10) { timeToUse = `0${parseInt(timeToUse, 10)}`; }
+    return `${timeToUse}`;
 };
 
 /**
@@ -132,7 +138,7 @@ const getValidTimeString = (time, meridiem) => {
         let validTime = (time && time.indexOf(':').length >= 0)
             ? time.split(/:/).map(t => getValidateTime(t)).join(':')
             : time;
-        const hourAsInt = parseInt(head(validTime.split(/:/)));
+        const hourAsInt = parseInt(head(validTime.split(/:/)), 10);
         const is12hTime = (hourAsInt > 0 && hourAsInt <= 12);
 
         validTime = (validTime && meridiem && is12hTime)
@@ -160,6 +166,59 @@ const getValidMeridiem = (meridiem) => {
 };
 
 /**
+ * Create a time data object using moment.
+ * If a time is provided, just format it; if not, use the current time.
+ *
+ * @function getValidTimeData
+ * @param  {string} time          a time; defaults to now
+ * @param  {string} meridiem      AM or PM; defaults to AM via moment
+ * @param  {Number} timeMode      12 or 24-hour mode
+ * @param  {string} tz            a timezone name; defaults to guessing a user's tz or GMT
+ * @return {Object}               a key-value representation of time data
+ */
+const getValidTimeData = (time, meridiem, timeMode, tz) => {
+    const validMeridiem = getValidMeridiem(meridiem);
+
+    // when we only have a valid meridiem, that implies a 12h mode
+    const mode = (validMeridiem && !timeMode) ? 12 : timeMode || 24;
+    const timezone = tz || guessUserTz().zoneName;
+    const validMode = getValidateTimeMode(mode);
+    const validTime = getValidTimeString(time, validMeridiem);
+    const format12 = 'hh:mmA';
+    const format24 = 'HH:mmA';
+
+    // What format is the hour we provide to moment below in?
+    const hourFormat = (validMode === 12) ? format12 : format24;
+
+    const time24 = ((validTime)
+        ? moment(`1970-01-01 ${validTime}`, `YYYY-MM-DD ${hourFormat}`, 'en').tz(timezone).format(format24)
+        : moment().tz(timezone).format(format24)).split(/:/);
+
+    const time12 = ((validTime)
+        ? moment(`1970-01-01 ${validTime}`, `YYYY-MM-DD ${hourFormat}`, 'en').tz(timezone).format(format12)
+        : moment().tz(timezone).format(format12)).split(/:/);
+
+    return {
+        hour12: head(time12).replace(/^0/, ''),
+        hour24: head(time24),
+        minute: last(time24).slice(0, 2),
+        meridiem: last(time12).slice(2),
+        mode: validMode,
+        timezone
+    };
+};
+
+/**
+ * Format the current time as a string
+ * @function getCurrentTime
+ * @return {string}
+ */
+const getCurrentTime = () => {
+    const time = getValidTimeData();
+    return `${time.hour24}:${time.minute}`;
+};
+
+/**
  * Ensure that a meridiem passed as a prop has a valid value
  * @function getValidateMeridiem
  * @param  {string} time
@@ -167,79 +226,15 @@ const getValidMeridiem = (meridiem) => {
  * @return {string|null}
  */
 const getValidateMeridiem = (time, timeMode) => {
-    if (!time) time = getCurrentTime();
-    const mode = parseInt(timeMode);
-    // eslint-disable-next-line no-unused-vars
-    let [hour, _] = time.split(/:/);
+    const timeToUse = (!time) ? time : getCurrentTime();
+    const mode = parseInt(timeMode, 10);
+    // eslint-disable-next-line no-unused-vars, prefer-const
+    let [hour, _] = timeToUse.split(/:/);
     hour = getValidateIntTime(hour);
 
     if (mode === 12) return (hour > 12) ? 'PM' : 'AM';
 
     return null;
-};
-/**
- * Validate and set a sensible default for time modes.
- * TODO: this function might not really be necessary, see getValidTimeData() above
- *
- * @function getValidateTimeMode
- * @param  {string|Number} timeMode
- * @return {Number}
- */
-const getValidateTimeMode = (timeMode) => {
-    const mode = parseInt(timeMode);
-
-    if (isNaN(mode)) { return 24; }
-    if (mode !== 24 && mode !== 12) { return 24; }
-
-    return mode;
-};
-
-const tzNames = (() => {
-    //  We want to subset the existing timezone data as much as possible, both for efficiency
-    //  and to avoid confusing the user. Here, we focus on removing reduntant timezone names
-    //  and timezone names for timezones we don't necessarily care about, like Antarctica, and
-    //  special timezone names that exist for convenience.
-    const scrubbedPrefixes = ['Antarctica', 'Arctic', 'Chile'];
-    const scrubbedSuffixes = ['ACT', 'East', 'Knox_IN', 'LHI', 'North', 'NSW', 'South', 'West'];
-
-    const tzNames = moment.tz.names()
-        .filter(name => name.indexOf('/') >= 0)
-        .filter(name => !scrubbedPrefixes.indexOf(name.split('/')[0]) >= 0)
-        .filter(name => !scrubbedSuffixes.indexOf(name.split('/').slice(-1)[0]) >= 0);
-
-    return tzNames;
-})();
-
-// We need a human-friendly city name for each timezone identifier
-// counting Canada/*, Mexico/*, and US/* allows users to search for
-// things like 'Eastern' or 'Mountain' and get matches back
-const tzCities = tzNames
-    .map(name => ((['Canada', 'Mexico', 'US'].indexOf(name.split('/')[0]) >= 0)
-        ? name : name.split('/').slice(-1)[0]))
-    .map(name => name.replace(/_/g, ' '));
-
-// Provide a mapping between a human-friendly city name and its corresponding
-// timezone identifier and timezone abbreviation as a named export.
-// We can fuzzy match on any of these.
-const tzMaps = tzCities.map((city) => {
-    const tzMap = {};
-    const tzName = tzNames[tzCities.indexOf(city)];
-
-    tzMap.city = city;
-    tzMap.zoneName = tzName;
-    tzMap.zoneAbbr = moment().tz(tzName).zoneAbbr();
-
-    return tzMap;
-});
-
-const getTzForCity = (city) => {
-    const maps = tzMaps.filter(tzMap => tzMap.city === city);
-    return head(maps);
-};
-
-const getTzForName = (name) => {
-    const maps = tzMaps.filter(tzMap => tzMap.zoneName === name);
-    return head(maps);
 };
 
 export default {
