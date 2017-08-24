@@ -58,7 +58,7 @@
     "less": "^2.7.2",
     "prop-types": "^15.5.10",
     "react-a11y-alt": "^0.3.5",
-    "react-addons-test-utils": "^15.6.0",
+    "react-test-renderer": "^15.6.1",
     "rimraf": "^2.6.1",
     "semver": "^5.4.1"
   }

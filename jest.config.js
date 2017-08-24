@@ -1,6 +1,6 @@
 module.exports = {
     testMatch: [
-        'test/*.test.js'
+        '<rootDir>/test/**/*.test.js'
     ],
     transform: {
         '^.+\\.js$': 'babel-jest'
