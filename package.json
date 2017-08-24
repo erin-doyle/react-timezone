@@ -30,8 +30,7 @@
     "moment-timezone": "^0.5.13",
     "react": "^15.6.1",
     "react-bootstrap-typeahead": "^2.0.0-alpha.3",
-    "react-dom": "^15.6.1",
-    "react-transition-group": "^2.2.0"
+    "react-dom": "^15.6.1"
   },
   "devDependencies": {
     "@storybook/addon-actions": "^3.2.6",
