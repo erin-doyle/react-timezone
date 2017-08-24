@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix",
+    "lint": "eslint src test",
+    "lint:fix": "eslint src test --fix",
     "test": "npm run lint && npm run test:jest",
     "test:jest": "jest",
     "test:nocache": "jest --no-cache",
