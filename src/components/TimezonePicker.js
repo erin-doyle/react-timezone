@@ -15,42 +15,30 @@ class TimezonePicker extends React.PureComponent {
     }
 
     handleTimezoneChange(selection) {
-        const { handleTimezoneChange, onClearFocus } = this.props;
+        const { onTimezoneChange, onClearFocus } = this.props;
         const zoneObject = selection[0];
         if (zoneObject) {
-            if (handleTimezoneChange) handleTimezoneChange(zoneObject);
+            if (onTimezoneChange) onTimezoneChange(zoneObject);
             onClearFocus();
         }
     }
 
     render() {
-        const { phrases, onClearFocus } = this.props;
+        const { phrases } = this.props;
         return (
-            <div className="timezone_picker_modal_container">
-                <div className="timezone_picker_modal_header">
-                    <BackButton clickHandler={onClearFocus} />
-                    <span className="timezone_picker_header_title">
-                        {phrases.timezonePickerTitle}
-                    </span>
-                </div>
-                <div className="timezone_picker_container">
-                    <div className="timezone_picker_search">
-                        <label id="timezone-picker-search-label" htmlFor="timezone-picker-search-input">
-                            {phrases.timezonePickerLabel}
-                        </label>
-                        <Typeahead
-                            onChange={this.handleTimezoneChange}
-                            labelKey={option => `${option.city} - ${option.zoneAbbr}`}
-                            options={timeHelper.tzMaps}
-                            maxResults={5}
-                            minLength={3}
-                        />
-                    </div>
-                </div>
-                <div className="buttons_wrapper">
-                    <button onClick={onClearFocus}>
-                        {phrases.close}
-                    </button>
+            <div className="timezone_picker_container">
+                <div className="timezone_picker_search">
+                    <label id="timezone-picker-search-label" htmlFor="timezone-picker-search-input">
+                        {phrases.timezonePickerLabel}
+                    </label>
+                    <Typeahead
+                        id="timezone-picker-search-input"
+                        onChange={this.handleTimezoneChange}
+                        labelKey={option => `${option.city} - ${option.zoneAbbr}`}
+                        options={timeHelper.tzMaps}
+                        maxResults={5}
+                        minLength={3}
+                    />
                 </div>
             </div>
         );
@@ -59,18 +47,16 @@ class TimezonePicker extends React.PureComponent {
 
 TimezonePicker.defaultProps = {
     phrases: {
-        close: 'close',
-        timezonePickerTitle: 'Pick a Timezone',
         timezonePickerLabel: 'Closest City or Timezone'
     },
     onClearFocus: () => {},
-    handleTimezoneChange: () => {}
+    onTimezoneChange: () => {}
 };
 
 TimezonePicker.propTypes = {
     phrases: PropTypes.object,
-    onClearFocus: PropTypes.func,
-    handleTimezoneChange: PropTypes.func
+    onClearFocus: PropTypes.func, // TODO: can we remove this?
+    onTimezoneChange: PropTypes.func
 };
 
 export default TimezonePicker;
