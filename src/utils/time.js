@@ -3,6 +3,8 @@ import moment from 'moment-timezone';
 import { head, last } from './func';
 
 
+const TIMEZONE_PARTS_DELIMITER = ' - ';
+
 // loads moment-timezone's timezone data, which comes from the
 // IANA Time Zone Database at https://www.iana.org/time-zones
 moment.tz.load({ version: 'latest', zones: [], links: [] });
@@ -56,6 +58,11 @@ const getTzForName = (name) => {
     return head(maps);
 };
 
+const getTzForCityAndZoneAbbr = (city, zoneAbbr) => {
+    const maps = tzMaps.filter(tzMap => tzMap.city === city && tzMap.zoneAbbr === zoneAbbr);
+    return head(maps);
+};
+
 const guessUserTz = () => {
     // User-Agent sniffing is not always reliable, but is the recommended technique
     // for determining whether or not we're on a mobile device according to MDN
@@ -87,9 +94,27 @@ const guessUserTz = () => {
     return getTzForName(userTz);
 };
 
-const getTimezoneDisplay = timezone => (
-    `${timezone.city} - ${timezone.zoneAbbr}`
-);
+const getTimezoneDisplay = (timezone) => {
+    if (!timezone || !timezone.city || !timezone.zoneAbbr) return '';
+
+    return `${timezone.city}${TIMEZONE_PARTS_DELIMITER}${timezone.zoneAbbr}`;
+};
+
+const deconstructTimezoneDisplay = (timezoneDisplay) => {
+    if (!timezoneDisplay) return undefined;
+
+    const delimiterStart = timezoneDisplay.indexOf(TIMEZONE_PARTS_DELIMITER);
+    const delimiterEnd = delimiterStart + TIMEZONE_PARTS_DELIMITER.length;
+    const city = timezoneDisplay.substring(0, delimiterStart);
+    const zoneAbbr = timezoneDisplay.substring(delimiterEnd);
+
+    if (!city || !zoneAbbr) return undefined;
+
+    return {
+        city,
+        zoneAbbr
+    };
+};
 
 const isValueInCityOrZone = (timezone, searchValue) => {
     if (!timezone || !searchValue) return false;
@@ -129,9 +154,11 @@ const compareByCityAndZone = (timezone1, timezone2) => {
 export default {
     tzForCity: getTzForCity,
     tzForName: getTzForName,
+    tzForCityAndZoneAbbr: getTzForCityAndZoneAbbr,
     guessUserTz,
     tzMaps,
     tzDisplay: getTimezoneDisplay,
+    deconstructTzDisplay: deconstructTimezoneDisplay,
     isValueInCityOrZone,
     compareByCityAndZone
 };

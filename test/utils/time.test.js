@@ -37,6 +37,78 @@ describe('Time utils', () => {
         });
     });
 
+    describe('getTZForCityAndZoneAbbr', () => {
+        it('should return the matching timezone object containing the provided city and zone abbreviation', () => {
+            const cityToSearchFor = 'New York';
+            const zoneToSearchFor = 'EDT';
+            const result = timeHelper.tzForCityAndZoneAbbr(cityToSearchFor, zoneToSearchFor);
+            expect(result.city).toEqual(cityToSearchFor);
+            expect(result.zoneAbbr).toEqual(zoneToSearchFor);
+        });
+
+        it('should return undefined when a timezone object does not exist containing the provided city and zone abbreviation', () => {
+            const cityToSearchFor = 'Some City that should not exist in the Timezone data';
+            const zoneToSearchFor = 'ABCDEFG';
+            const result = timeHelper.tzForCityAndZoneAbbr(cityToSearchFor, zoneToSearchFor);
+            expect(result).not.toBeDefined();
+        });
+    });
+
+    describe('tzDisplay', () => {
+        describe('when the timezone object is valid', () => {
+            it('should return a string representation of the timezone object', () => {
+                const displayResult = timeHelper.tzDisplay(mockTimezone);
+                expect(displayResult).toBe('Some City - SOZ');
+            });
+        });
+
+        describe('when the timezone object is not valid', () => {
+            it('should return an empty string', () => {
+                const invalidTimezones = [
+                    null,
+                    undefined,
+                    {},
+                    { city: 'Some City' },
+                    { zoneAbbr: 'SOZ' },
+                    { someField: 'Neither city nor zoneAbbr' }
+                ];
+
+                invalidTimezones.forEach((timezone) => {
+                    const displayResult = timeHelper.tzDisplay(timezone);
+                    expect(displayResult).toBe('');
+                });
+            });
+        });
+    });
+
+    describe('deconstructTzDisplay', () => {
+        describe('when the timezone display object is valid', () => {
+            it('should return a city and zone abbreviation', () => {
+                const deconstructedResult = timeHelper.deconstructTzDisplay('Some City - SOZ');
+                expect(deconstructedResult.city).toBe('Some City');
+                expect(deconstructedResult.zoneAbbr).toBe('SOZ');
+            });
+        });
+
+        describe('when the timezone display object is not valid', () => {
+            it('should return undefined', () => {
+                const invalidTimezones = [
+                    null,
+                    undefined,
+                    '',
+                    'Some City',
+                    '- SOZ',
+                    '-'
+                ];
+
+                invalidTimezones.forEach((timezone) => {
+                    const deconstructedResult = timeHelper.deconstructTzDisplay(timezone);
+                    expect(deconstructedResult).toBe(undefined);
+                });
+            });
+        });
+    });
+
     describe('isValueInCityOrZone', () => {
         it('should return true if value is found in the City (ignore case)', () => {
             // Given: a value to search for
