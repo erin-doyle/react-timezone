@@ -8,7 +8,7 @@ import timeHelper from '../utils/time';
 
 export const TimezoneOption = (item, isHighlighted) => (
     <div
-        key={`${item.city}-${item.zoneAbbr}`}
+        key={`${item.zoneName}-${item.zoneAbbr}`}
         className={classNames('timezone-option', {
             'timezone-option__highlighted': isHighlighted
         })}
@@ -22,8 +22,10 @@ class TimezonePicker extends React.PureComponent {
     constructor(props) {
         super(props);
 
+        const guessedTimezone = timeHelper.guessUserTz();
+
         this.state = {
-            timezone: timeHelper.guessUserTz()
+            timezone: timeHelper.tzDisplay(guessedTimezone)
         };
 
         this.handleTimezoneChange = this.handleTimezoneChange.bind(this);
@@ -31,9 +33,10 @@ class TimezonePicker extends React.PureComponent {
 
     handleTimezoneChange(selection) {
         const { onTimezoneChange } = this.props;
-        const zoneObject = selection[0];
+        const { city, zoneAbbr } = timeHelper.deconstructTzDisplay(selection);
+        const zoneObject = timeHelper.tzForCityAndZoneAbbr(city, zoneAbbr);
         if (zoneObject) {
-            this.setState({ timezone: zoneObject });
+            this.setState({ timezone: timeHelper.tzDisplay(zoneObject) });
             if (onTimezoneChange) onTimezoneChange(zoneObject);
         }
     }
@@ -49,8 +52,6 @@ class TimezonePicker extends React.PureComponent {
 
         const { timezone } = this.state;
 
-        const valueDisplay = `${timezone.zoneName} ${timezone.zoneAbbr}`;
-
         return (
             <div className="timezone_picker_container">
                 <div className="timezone_picker_search">
@@ -59,18 +60,18 @@ class TimezonePicker extends React.PureComponent {
                     </label>
                     <Autocomplete
                         id="timezone-picker-search-input"
-                        onChange={(event, value) => this.handleTimezoneChange(value)}
+                        onChange={(event, value) => this.setState({ timezone: value })}
                         onSelect={value => this.handleTimezoneChange(value)}
                         onMenuVisibilityChange={onMenuVisibilityChange}
-                        items={timeHelper.tzMaps}
-                        getItemValue={timeHelper.tzDisplay}
-                        value={valueDisplay}
                         menuStyle={menuStyle}
                         inputProps={inputProps}
                         wrapperProps={wrapperProps}
+                        items={timeHelper.tzMaps}
                         shouldItemRender={timeHelper.isValueInCityOrZone}
+                        getItemValue={timeHelper.tzDisplay}
                         sortItems={timeHelper.compareByCityAndZone}
                         renderItem={TimezoneOption}
+                        value={timezone}
                     />
                 </div>
             </div>

@@ -8,9 +8,9 @@ const mockPhrases = {
     timezonePickerLabel: 'phrase for the label'
 };
 const mockTimezone = {
-    city: 'Some City',
-    zoneName: 'Some Zone',
-    zoneAbbr: 'SOZ'
+    city: 'New York',
+    zoneName: 'America/New_York',
+    zoneAbbr: 'EDT'
 };
 
 describe('TimezonePicker', () => {
@@ -39,7 +39,7 @@ describe('TimezonePicker', () => {
                     onTimezoneChange={onTimezoneChangeStub}
                 />
             );
-            wrapper.instance().handleTimezoneChange([mockTimezone]);
+            wrapper.instance().handleTimezoneChange(`${mockTimezone.city} - ${mockTimezone.zoneAbbr}`);
             expect(onTimezoneChangeStub.mock.calls.length).toBe(1);
             expect(onTimezoneChangeStub).toBeCalledWith(mockTimezone);
         });
