@@ -9,6 +9,34 @@ const mockTimezone = {
 };
 
 describe('Time utils', () => {
+    describe('getTzForCity', () => {
+        it('should return the first timezone object containing the provided city', () => {
+            const cityToSearchFor = 'New York';
+            const result = timeHelper.tzForCity(cityToSearchFor);
+            expect(result.city).toEqual(cityToSearchFor);
+        });
+
+        it('should return undefined when a timezone object does not exist containing the provided city', () => {
+            const cityToSearchFor = 'Some City that should not exist in the Timezone data';
+            const result = timeHelper.tzForCity(cityToSearchFor);
+            expect(result).not.toBeDefined();
+        });
+    });
+
+    describe('getTzForName', () => {
+        it('should return the first timezone object containing the provided name', () => {
+            const nameToSearchFor = 'America/New_York';
+            const result = timeHelper.tzForName(nameToSearchFor);
+            expect(result.zoneName).toEqual(nameToSearchFor);
+        });
+
+        it('should return undefined when a timezone object does not exist containing the provided name', () => {
+            const nameToSearchFor = 'Some Name that should not exist in the Timezone data';
+            const result = timeHelper.tzForName(nameToSearchFor);
+            expect(result).not.toBeDefined();
+        });
+    });
+
     describe('isValueInCityOrZone', () => {
         it('should return true if value is found in the City (ignore case)', () => {
             // Given: a value to search for

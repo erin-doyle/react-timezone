@@ -32,16 +32,19 @@ const tzCities = tzNames
 // Provide a mapping between a human-friendly city name and its corresponding
 // timezone identifier and timezone abbreviation as a named export.
 // We can fuzzy match on any of these.
-const tzMaps = tzCities.map((city) => {
+const interimTzSet = new Set();
+tzCities.forEach((city, index) => {
     const tzMap = {};
-    const tzName = tzNames[tzCities.indexOf(city)];
+    const tzName = tzNames[index];
 
     tzMap.city = city;
     tzMap.zoneName = tzName;
     tzMap.zoneAbbr = moment().tz(tzName).zoneAbbr();
 
-    return tzMap;
+    interimTzSet.add(tzMap);
 });
+// the interimTzSet is just used for the purpose of eliminating duplicates
+const tzMaps = [...interimTzSet];
 
 const getTzForCity = (city) => {
     const maps = tzMaps.filter(tzMap => tzMap.city === city);
@@ -94,6 +97,7 @@ const isValueInCityOrZone = (timezone, searchValue) => {
     // the search should ignore case
     const regexSearchValue = new RegExp(searchValue, 'i');
 
+    // TODO: is this sufficient for matching?
     return (
         timezone.city.search(regexSearchValue) !== -1 ||
         timezone.zoneAbbr.search(regexSearchValue) !== -1
