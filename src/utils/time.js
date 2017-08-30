@@ -84,10 +84,51 @@ const guessUserTz = () => {
     return getTzForName(userTz);
 };
 
+const getTimezoneDisplay = timezone => (
+    `${timezone.city} - ${timezone.zoneAbbr}`
+);
+
+const isValueInCityOrZone = (timezone, searchValue) => {
+    if (!timezone || !searchValue) return false;
+
+    // the search should ignore case
+    const regexSearchValue = new RegExp(searchValue, 'i');
+
+    return (
+        timezone.city.search(regexSearchValue) !== -1 ||
+        timezone.zoneAbbr.search(regexSearchValue) !== -1
+    );
+};
+
+const compareByCityAndZone = (timezone1, timezone2) => {
+    const city1 = timezone1.city.toLowerCase();
+    const zone1 = timezone1.zoneAbbr.toLowerCase();
+    const city2 = timezone2.city.toLowerCase();
+    const zone2 = timezone2.zoneAbbr.toLowerCase();
+
+    // first compare city
+    if (city1 < city2) return -1;
+    if (city1 > city2) return 1;
+
+    // city must be equal
+
+    // next compare zoneAbbr
+    if (zone1 < zone2) return -1;
+    if (zone1 > zone2) return 1;
+
+    // zoneAbbr must be equal
+
+    // treat both timezones as "equivalent"
+    return 0;
+};
+
 export default {
     tzForCity: getTzForCity,
     tzForName: getTzForName,
     guessUserTz,
-    tzMaps
+    tzMaps,
+    tzDisplay: getTimezoneDisplay,
+    isValueInCityOrZone,
+    compareByCityAndZone
 };
 

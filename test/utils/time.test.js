@@ -1,109 +1,266 @@
-import moment from 'moment-timezone';
-
-import { head, last } from '../../src/utils/func';
+/* eslint-disable max-len */ // lots of long test names and that's ok
 import timeHelper from '../../src/utils/time';
 
 
-const tz = timeHelper.guessUserTz();
-const time24 = moment().tz(tz.zoneName).format('HH:mmA').split(/:/);
-const time12 = moment().tz(tz.zoneName).format('hh:mmA').split(/:/);
-
-const modes = [24, 12];
-const meridies = ['AM', 'PM']; // yes, this is the correct plural 😜
+const mockTimezone = {
+    city: 'Some City',
+    zoneName: 'Some Zone',
+    zoneAbbr: 'SOZ'
+};
 
 describe('Time utils', () => {
-    describe('getCurrentTime()', () => {
-        it('should return the current time as a string in 24h format', () => {
-            const timeString = timeHelper.current();
-            expect(timeString).toBe(time24.join(':').slice(0, 5));
-        });
-    });
+    describe('isValueInCityOrZone', () => {
+        it('should return true if value is found in the City (ignore case)', () => {
+            // Given: a value to search for
+            const valuesToTest = [
+                // value completely matches City
+                'SOME CITY', // all caps
+                'some city', // all lowercase
+                'Some City', // mixed case
+                // value at beginning of City
+                'SOME', // all caps
+                'some', // all lowercase
+                'Some', // mixed case
+                // value at end of City
+                'CITY', // all caps
+                'city', // all lowercase
+                'City', // mixed case
+                // value in the middle of City
+                'OME', // all caps
+                'cit', // all lowercase
+                'ome Cit' // mixed case
+            ];
 
-    describe('given a call to getValidTimeData()', () => {
-        describe('when passed no arguments', () => {
-            it('then it should default to the current local time in 24h mode', () => {
-                const testTimeData = timeHelper.time();
+            valuesToTest.forEach((searchValue) => {
+                // When: we search for the value in the City or Zone
+                const isValueFound = timeHelper.isValueInCityOrZone(mockTimezone, searchValue);
 
-                const timeData = {
-                    hour12: head(time12).replace(/^0/, ''),
-                    hour24: head(time24),
-                    minute: last(time24).slice(0, 2),
-                    meridiem: last(time12).slice(2),
-                    mode: 24,
-                    timezone: tz.zoneName
-                };
-
-                expect(testTimeData).toEqual(timeData);
+                try {
+                    // Then: the result should be true
+                    expect(isValueFound).toBeTruthy();
+                } catch (error) {
+                    throw Error(`Search Value ${searchValue} not found in ${mockTimezone.city}`);
+                }
             });
         });
 
-        describe('when passed only a mode', () => {
-            it('then it should default to the current local time, with user-specified mode', () => {
-                modes.forEach((mode) => {
-                    const testTimeData = timeHelper.time(undefined, undefined, mode);
-                    const timeData = {
-                        hour12: head(time12).replace(/^0/, ''),
-                        hour24: head(time24),
-                        minute: last(time24).slice(0, 2),
-                        meridiem: last(time12).slice(2),
-                        mode,
-                        timezone: tz.zoneName
-                    };
+        it('should return true if value is found in the Zone Abbreviation (ignore case)', () => {
+            // Given: a value to search for
+            const valuesToTest = [
+                // value completely matches Zone Abbreviation
+                'SOZ', // all caps
+                'soz', // all lowercase
+                'Soz', // mixed case
+                // value at beginning of Zone Abbreviation
+                'SO', // all caps
+                'so', // all lowercase
+                'So', // mixed case
+                // value at end of Zone Abbreviation
+                'OZ', // all caps
+                'oz', // all lowercase
+                'oZ', // mixed case
+                // value in the middle of Zone Abbreviation
+                'O', // all caps
+                'o' // all lowercase
+            ];
 
-                    expect(testTimeData).toEqual(timeData);
+            valuesToTest.forEach((searchValue) => {
+                // When: we search for the value in the City or Zone
+                const isValueFound = timeHelper.isValueInCityOrZone(mockTimezone, searchValue);
+
+                try {
+                    // Then: the result should be true
+                    expect(isValueFound).toBeTruthy();
+                } catch (error) {
+                    throw Error(`Search Value ${searchValue} not found in ${mockTimezone.zoneAbbr}`);
+                }
+            });
+        });
+
+        it('should return false if value not found in City or Zone Abbreviation (ignore case)', () => {
+            // Given: a value to search for
+            const valuesToTest = [
+                // value completely does not match City or Zone Abbreviation
+                'Value that does not Match',
+                // value that has City in it but itself is not a set or subset of City
+                'This has Some City inside it',
+                'Some City begins this value',
+                'The value ends with Some City',
+                // value that has Zone Abbreviation in it but itself is not a set or subset of Zone Abbreviation
+                'This has SOZ inside it',
+                'SOZ begins this value',
+                'The values ends with SOZ'
+            ];
+
+            valuesToTest.forEach((searchValue) => {
+                // When: we search for the value in the City or Zone
+                const isValueFound = timeHelper.isValueInCityOrZone(mockTimezone, searchValue);
+
+                try {
+                    // Then: the result should be false
+                    expect(isValueFound).toBeFalsy();
+                } catch (error) {
+                    throw Error(`Search Value ${searchValue} should not be found in ${mockTimezone.city} or ${mockTimezone.zoneAbbr}`);
+                }
+            });
+        });
+    });
+
+    describe('compareByCityAndZone', () => {
+        describe('when the City in timezone1 is less than the City in timezone2', () => {
+            const lessThanCities = [
+                // alphabetically before timezone2 city
+                'ATLANTA', // all caps
+                'atlanta', // all lowercase
+                'Atlanta', // mixed case
+                // subset of timezone2 city
+                'SOME', // all caps
+                'some', // all lowercase
+                'Some', // mixed case
+                // numerically before timezone2 city
+                '123 CITY', // all caps
+                '123 city', // all lowercase
+                '123 City', // mixed case
+                // character before timezone2 city
+                '_ CITY', // all caps
+                '_ city', // all lowercase
+                '_ City' // mixed case
+            ];
+
+            it('should return -1', () => {
+                lessThanCities.forEach((cityToCompare) => {
+                    // Given: a timezone with a City less than the City in timezone2
+                    const timezoneToCompare = Object.assign({}, mockTimezone, { city: cityToCompare });
+
+                    // When: we compare timezone1 against timezone2
+                    const comparisonResult = timeHelper.compareByCityAndZone(timezoneToCompare, mockTimezone);
+
+                    try {
+                        // Then: the result should be -1
+                        expect(comparisonResult).toBe(-1);
+                    } catch (error) {
+                        throw Error(`timezone1 city ${timezoneToCompare.city} not less than timezone2 city ${mockTimezone.city}`);
+                    }
                 });
             });
         });
 
-        describe('when we passed only a meridiem', () => {
-            it('then it should default to the current local time, in 12h mode, ignoring meridiem', () => {
-                meridies.forEach((meridiem) => {
-                    const testTimeData = timeHelper.time(undefined, meridiem);
-                    const timeData = {
-                        hour12: head(time12).replace(/^0/, ''),
-                        hour24: head(time24),
-                        minute: last(time24).slice(0, 2),
-                        meridiem: last(time12).slice(2),
-                        mode: 12,
-                        timezone: tz.zoneName
-                    };
+        describe('when the City in timezone1 is the greater than the City in timezone2', () => {
+            const greaterThanCities = [
+                // alphabetically after timezone2 city
+                'ZALAEGERSZEG', // all caps
+                'zalaegerszeg', // all lowercase
+                'Zalaegerszeg', // mixed case
+                // superset of timezone2 city
+                'SOME CITY AND MORE', // all caps
+                'some city and more', // all lowercase
+                'Some City and More' // mixed case
+            ];
 
-                    expect(testTimeData).toEqual(timeData);
+            it('should return 1', () => {
+                greaterThanCities.forEach((cityToCompare) => {
+                    // Given: a timezone with a City greater than the City in timezone2
+                    const timezoneToCompare = Object.assign({}, mockTimezone, { city: cityToCompare });
+
+                    // When: we compare timezone1 against timezone2
+                    const comparisonResult = timeHelper.compareByCityAndZone(timezoneToCompare, mockTimezone);
+
+                    try {
+                        // Then: the result should be 1
+                        expect(comparisonResult).toBe(1);
+                    } catch (error) {
+                        throw Error(`timezone1 city ${timezoneToCompare.city} not greater than timezone2 city ${mockTimezone.city}`);
+                    }
                 });
             });
         });
-    });
 
-    describe('Test getValidateTime func', () => {
-        it('should return 00 when get undefined', () => {
-            expect(timeHelper.validate()).toBe('00');
-        });
+        describe('when the City in timezone1 is the same as the City in timezone2', () => {
+            describe('when the Zone Abbreviation in timezone1 is less than the Zone Abbreviation in timezone2', () => {
+                const lessThanZones = [
+                    // alphabetically before timezone2 zone
+                    'ATL', // all caps
+                    'atl', // all lowercase
+                    'Atl', // mixed case
+                    // subset of timezone2 zone
+                    'SO', // all caps
+                    'so', // all lowercase
+                    'So', // mixed case
+                    // numerically before timezone2 zone
+                    '123SO', // all caps
+                    '123so', // all lowercase
+                    '123So', // mixed case
+                    // character before timezone2 zone
+                    '_SO', // all caps
+                    '_so', // all lowercase
+                    '_So' // mixed case
+                ];
 
-        it('should return 00 when get NaN', () => {
-            expect(timeHelper.validate('abc')).toBe('00');
-        });
+                it('should return -1', () => {
+                    lessThanZones.forEach((zoneToCompare) => {
+                        // Given: a timezone with the same City as timezone2 but a zoneAbbr less than timezone2
+                        const timezoneToCompare = Object.assign({}, mockTimezone, { zoneAbbr: zoneToCompare });
 
-        it('should return itself when validate', () => {
-            expect(timeHelper.validate('12')).toBe('12');
-        });
+                        // When: we compare timezone1 against timezone2
+                        const comparisonResult = timeHelper.compareByCityAndZone(timezoneToCompare, mockTimezone);
 
-        it('should return a string with 0', () => {
-            expect(timeHelper.validate('2')).toBe('02');
-        });
-    });
+                        try {
+                            // Then: the result should be -1
+                            expect(comparisonResult).toBe(-1);
+                        } catch (error) {
+                            throw Error(`timezone1 zone ${timezoneToCompare.zoneAbbr} not less than timezone2 zone ${mockTimezone.zoneAbbr}`);
+                        }
+                    });
+                });
+            });
 
-    describe('Test getValidateIntTime func', () => {
-        it('should return 0', () => {
-            expect(timeHelper.validateInt('a')).toBe(0);
-        });
+            describe('when the Zone Abbreviation in timezone1 is greater than the Zone Abbreviation in timezone2', () => {
+                const greaterThanZones = [
+                    // alphabetically after timezone2 zone
+                    'ZOD', // all caps
+                    'zod', // all lowercase
+                    'Zod', // mixed case
+                    // superset of timezone2 zone
+                    'SOZ AND MORE', // all caps
+                    'soz and more', // all lowercase
+                    'Soz and More' // mixed case
+                ];
 
-        it('should return int', () => {
-            expect(timeHelper.validateInt('11')).toBe(11);
-        });
+                it('should return 1', () => {
+                    greaterThanZones.forEach((zoneToCompare) => {
+                        // Given: a timezone with the same City as timezone2 but a zoneAbbr greater than timezone2
+                        const timezoneToCompare = Object.assign({}, mockTimezone, { zoneAbbr: zoneToCompare });
 
-        it('should return 0', () => {
-            expect(timeHelper.validateInt(null)).toBe(0);
+                        // When: we compare timezone1 against timezone2
+                        const comparisonResult = timeHelper.compareByCityAndZone(timezoneToCompare, mockTimezone);
+
+                        try {
+                            // Then: the result should be 1
+                            expect(comparisonResult).toBe(1);
+                        } catch (error) {
+                            throw Error(`timezone1 zone ${timezoneToCompare.zoneAbbr} not greater than timezone2 zone ${mockTimezone.zoneAbbr}`);
+                        }
+                    });
+                });
+            });
+
+            describe('when the Zone Abbreviation in timezone1 is the same as the Zone Abbreviation in timezone2', () => {
+                it('should return 0', () => {
+                    // Given: a timezone exactly the same as timezone2
+                    const timezoneToCompare = Object.assign({}, mockTimezone);
+
+                    // When: we compare timezone1 against timezone2
+                    const comparisonResult = timeHelper.compareByCityAndZone(timezoneToCompare, mockTimezone);
+
+                    try {
+                        // Then: the result should be 0
+                        expect(comparisonResult).toBe(0);
+                    } catch (error) {
+                        throw Error(`timezone1 ${timezoneToCompare.city} - ${timezoneToCompare.zoneAbbr} \
+                            not equal to timezone2 ${mockTimezone.city} - ${mockTimezone.zoneAbbr}`);
+                    }
+                });
+            });
         });
     });
 });
-
