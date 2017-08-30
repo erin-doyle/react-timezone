@@ -26,10 +26,11 @@
   },
   "homepage": "https://github.com/erin-doyle/react-timezone#readme",
   "dependencies": {
+    "classnames": "^2.2.5",
     "moment": "^2.18.1",
     "moment-timezone": "^0.5.13",
     "react": "^15.6.1",
-    "react-bootstrap-typeahead": "^2.0.0-alpha.3",
+    "react-autocomplete": "^1.7.1",
     "react-dom": "^15.6.1"
   },
   "devDependencies": {
