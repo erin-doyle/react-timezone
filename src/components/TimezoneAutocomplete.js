@@ -18,7 +18,7 @@ export const TimezoneOption = (item, isHighlighted) => (
 );
 
 
-class TimezonePicker extends React.PureComponent {
+class TimezoneAutocomplete extends React.PureComponent {
     constructor(props) {
         super(props);
 
@@ -79,7 +79,7 @@ class TimezonePicker extends React.PureComponent {
     }
 }
 
-TimezonePicker.defaultProps = {
+TimezoneAutocomplete.defaultProps = {
     phrases: {
         timezonePickerLabel: 'Closest City or Timezone'
     },
@@ -99,7 +99,7 @@ TimezonePicker.defaultProps = {
     wrapperProps: {}
 };
 
-TimezonePicker.propTypes = {
+TimezoneAutocomplete.propTypes = {
     phrases: PropTypes.object,
     onTimezoneChange: PropTypes.func,
     onMenuVisibilityChange: PropTypes.func,
@@ -108,5 +108,5 @@ TimezonePicker.propTypes = {
     wrapperProps: PropTypes.object
 };
 
-export default TimezonePicker;
+export default TimezoneAutocomplete;
 

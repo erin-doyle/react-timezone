@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import TimezonePicker from '../../src/components/TimezonePicker';
+import TimezoneAutocomplete from '../../src/components/TimezoneAutocomplete';
 
 
 const mockPhrases = {
@@ -13,10 +13,10 @@ const mockTimezone = {
     zoneAbbr: 'EDT'
 };
 
-describe('TimezonePicker', () => {
-    describe('TimezonePicker render', () => {
+describe('TimezoneAutocomplete', () => {
+    describe('TimezoneAutocomplete render', () => {
         const wrapper = shallow(
-            <TimezonePicker
+            <TimezoneAutocomplete
                 phrases={mockPhrases}
             />
         );
@@ -34,7 +34,7 @@ describe('TimezonePicker', () => {
         it('should callback when timezone change', () => {
             const onTimezoneChangeStub = jest.fn();
             const wrapper = shallow(
-                <TimezonePicker
+                <TimezoneAutocomplete
                     phrases={mockPhrases}
                     onTimezoneChange={onTimezoneChangeStub}
                 />

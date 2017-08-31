@@ -5,13 +5,13 @@ import { action } from '@storybook/addon-actions';
 
 import '../styles/timezone.css';
 
-import TimezonePicker from '../src/index';
+import TimezoneAutocomplete from '../src/index';
 
 
 storiesOf('Timezones', module)
     .addDecorator(withKnobs)
     .add('with timezone picker', () => (
-        <TimezonePicker
+        <TimezoneAutocomplete
             phrases={{
                 timezonePickerLabel: text('timezonePickerLabel phrase', 'Closest City or Timezone')
             }}
