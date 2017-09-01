@@ -9,48 +9,51 @@ const mockTimezone = {
 };
 
 describe('Time utils', () => {
-    describe('getTzForCity', () => {
-        it('should return the first timezone object containing the provided city', () => {
+    describe('tzSearch with city argument', () => {
+        it('should return an array of one timezone object containing the provided city', () => {
             const cityToSearchFor = 'New York';
-            const result = timeHelper.tzForCity(cityToSearchFor);
-            expect(result.city).toEqual(cityToSearchFor);
+            const result = timeHelper.tzSearch({ city: cityToSearchFor });
+            expect(result).toHaveLength(1);
+            expect(result[0].city).toEqual(cityToSearchFor);
         });
 
-        it('should return undefined when a timezone object does not exist containing the provided city', () => {
+        it('should return an empty array when a timezone object does not exist containing the provided city', () => {
             const cityToSearchFor = 'Some City that should not exist in the Timezone data';
-            const result = timeHelper.tzForCity(cityToSearchFor);
-            expect(result).not.toBeDefined();
+            const result = timeHelper.tzSearch({ city: cityToSearchFor });
+            expect(result).toHaveLength(0);
         });
     });
 
-    describe('getTzForName', () => {
+    describe('tzSearch with name argument', () => {
         it('should return the first timezone object containing the provided name', () => {
             const nameToSearchFor = 'America/New_York';
-            const result = timeHelper.tzForName(nameToSearchFor);
-            expect(result.zoneName).toEqual(nameToSearchFor);
+            const result = timeHelper.tzSearch({ zoneName: nameToSearchFor });
+            expect(result).toHaveLength(1);
+            expect(result[0].zoneName).toEqual(nameToSearchFor);
         });
 
         it('should return undefined when a timezone object does not exist containing the provided name', () => {
             const nameToSearchFor = 'Some Name that should not exist in the Timezone data';
-            const result = timeHelper.tzForName(nameToSearchFor);
-            expect(result).not.toBeDefined();
+            const result = timeHelper.tzSearch({ zoneName: nameToSearchFor });
+            expect(result).toHaveLength(0);
         });
     });
 
-    describe('getTZForCityAndZoneAbbr', () => {
+    describe('tzSearch with city and abbr arguments', () => {
         it('should return the matching timezone object containing the provided city and zone abbreviation', () => {
             const cityToSearchFor = 'New York';
             const zoneToSearchFor = 'EDT';
-            const result = timeHelper.tzForCityAndZoneAbbr(cityToSearchFor, zoneToSearchFor);
-            expect(result.city).toEqual(cityToSearchFor);
-            expect(result.zoneAbbr).toEqual(zoneToSearchFor);
+            const result = timeHelper.tzSearch({ city: cityToSearchFor, zoneAbbr: zoneToSearchFor });
+            expect(result).toHaveLength(1);
+            expect(result[0].city).toEqual(cityToSearchFor);
+            expect(result[0].zoneAbbr).toEqual(zoneToSearchFor);
         });
 
         it('should return undefined when a timezone object does not exist containing the provided city and zone abbreviation', () => {
             const cityToSearchFor = 'Some City that should not exist in the Timezone data';
             const zoneToSearchFor = 'ABCDEFG';
-            const result = timeHelper.tzForCityAndZoneAbbr(cityToSearchFor, zoneToSearchFor);
-            expect(result).not.toBeDefined();
+            const result = timeHelper.tzSearch({ city: cityToSearchFor, zoneAbbr: zoneToSearchFor });
+            expect(result).toHaveLength(0);
         });
     });
 

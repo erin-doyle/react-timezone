@@ -13,22 +13,6 @@ export const formatTimezone = (timezone) => {
     return `${timezone.city}${TIMEZONE_PARTS_DELIMITER}${timezone.zoneAbbr}`;
 };
 
-export const parseTimezone = (timezoneDisplay) => {
-    if (!timezoneDisplay) return undefined;
-
-    const delimiterStart = timezoneDisplay.indexOf(TIMEZONE_PARTS_DELIMITER);
-    const delimiterEnd = delimiterStart + TIMEZONE_PARTS_DELIMITER.length;
-    const city = timezoneDisplay.substring(0, delimiterStart);
-    const zoneAbbr = timezoneDisplay.substring(delimiterEnd);
-
-    if (!city || !zoneAbbr) return undefined;
-
-    return {
-        city,
-        zoneAbbr
-    };
-};
-
 export const TimezoneOption = (item, isHighlighted) => (
     <div
         key={`${item.zoneName}-${item.zoneAbbr}`}

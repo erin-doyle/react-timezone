@@ -4,20 +4,13 @@ import { head } from './func';
 import tzMaps from '../data/timezoneData';
 
 
-const getTzForCity = (city) => {
-    const maps = tzMaps.filter(tzMap => tzMap.city === city);
-    return head(maps);
-};
-
-const getTzForName = (name) => {
-    const maps = tzMaps.filter(tzMap => tzMap.zoneName === name);
-    return head(maps);
-};
-
-const getTzForCityAndZoneAbbr = (city, zoneAbbr) => {
-    const maps = tzMaps.filter(tzMap => tzMap.city === city && tzMap.zoneAbbr === zoneAbbr);
-    return head(maps);
-};
+const tzSearch = ({ city, zoneName, zoneAbbr }) => (
+    tzMaps.filter(tzMap => (
+        ((city && tzMap.city === city) || !city) &&
+        ((zoneName && tzMap.zoneName === zoneName) || !zoneName) &&
+        ((zoneAbbr && tzMap.zoneAbbr === zoneAbbr) || !zoneAbbr)
+    ))
+);
 
 const guessUserTz = () => {
     // User-Agent sniffing is not always reliable, but is the recommended technique
@@ -45,9 +38,9 @@ const guessUserTz = () => {
     }
 
     // return GMT if we're unable to guess or the system is using UTC
-    if (!userTz || userTz === 'UTC') return getTzForName('Etc/Greenwich');
+    if (!userTz || userTz === 'UTC') return head(tzSearch({ zoneName: 'Etc/Greenwich' }));
 
-    return getTzForName(userTz);
+    return head(tzSearch({ zoneName: userTz }));
 };
 
 const isValueInCityOrZone = (timezone, searchValue) => {
@@ -86,9 +79,7 @@ const compareByCityAndZone = (timezone1, timezone2) => {
 };
 
 export default {
-    tzForCity: getTzForCity,
-    tzForName: getTzForName,
-    tzForCityAndZoneAbbr: getTzForCityAndZoneAbbr,
+    tzSearch,
     guessUserTz,
     tzMaps,
     isValueInCityOrZone,

@@ -11,9 +11,7 @@ export const timezoneValuePropTypes = {
 
 export const timezoneHelperPropTypes = {
     allTimezones: arrayOf(timezoneValuePropTypes),
-    getByCity: func.isRequired,
-    getByName: func.isRequired,
-    getByCityAndZoneAbbreviation: func.isRequired,
+    search: func.isRequired,
     guessCurrent: func.isRequired,
     match: func.isRequired,
     compare: func.isRequired

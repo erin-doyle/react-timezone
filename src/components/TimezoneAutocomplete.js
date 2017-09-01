@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/dedupe';
 import Autocomplete from 'react-autocomplete';
 
+import { head } from '../utils/func';
 import timeHelper from '../utils/time';
 
 
@@ -58,7 +59,7 @@ class TimezoneAutocomplete extends React.PureComponent {
     handleTimezoneChange(selection) {
         const { onTimezoneChange } = this.props;
         const { city, zoneAbbr } = parseTimezone(selection);
-        const zoneObject = timeHelper.tzForCityAndZoneAbbr(city, zoneAbbr);
+        const zoneObject = head(timeHelper.tzSearch({ city, zoneAbbr }));
         if (zoneObject) {
             this.setState({ timezone: formatTimezone(zoneObject) });
             if (onTimezoneChange) onTimezoneChange(zoneObject);
