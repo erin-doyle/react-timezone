@@ -1,9 +1,6 @@
 import TimezoneAutocomplete from './components/TimezoneAutocomplete';
 
+export { timezoneShape } from './utils/types';
+export { default as injectTimezone } from './inject';
 
 export default TimezoneAutocomplete;
-
-// If we want to expose any other helpers, etc we can put them here
-export {
-
-};

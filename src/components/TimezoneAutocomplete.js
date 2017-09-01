@@ -6,6 +6,30 @@ import Autocomplete from 'react-autocomplete';
 import timeHelper from '../utils/time';
 
 
+const TIMEZONE_PARTS_DELIMITER = ' - ';
+
+export const formatTimezone = (timezone) => {
+    if (!timezone || !timezone.city || !timezone.zoneAbbr) return '';
+
+    return `${timezone.city}${TIMEZONE_PARTS_DELIMITER}${timezone.zoneAbbr}`;
+};
+
+export const parseTimezone = (timezoneDisplay) => {
+    if (!timezoneDisplay) return undefined;
+
+    const delimiterStart = timezoneDisplay.indexOf(TIMEZONE_PARTS_DELIMITER);
+    const delimiterEnd = delimiterStart + TIMEZONE_PARTS_DELIMITER.length;
+    const city = timezoneDisplay.substring(0, delimiterStart);
+    const zoneAbbr = timezoneDisplay.substring(delimiterEnd);
+
+    if (!city || !zoneAbbr) return undefined;
+
+    return {
+        city,
+        zoneAbbr
+    };
+};
+
 export const TimezoneOption = (item, isHighlighted) => (
     <div
         key={`${item.zoneName}-${item.zoneAbbr}`}
@@ -13,7 +37,7 @@ export const TimezoneOption = (item, isHighlighted) => (
             'timezone-option__highlighted': isHighlighted
         })}
     >
-        {timeHelper.tzDisplay(item)}
+        {formatTimezone(item)}
     </div>
 );
 
@@ -25,7 +49,7 @@ class TimezoneAutocomplete extends React.PureComponent {
         const guessedTimezone = timeHelper.guessUserTz();
 
         this.state = {
-            timezone: timeHelper.tzDisplay(guessedTimezone)
+            timezone: formatTimezone(guessedTimezone)
         };
 
         this.handleTimezoneChange = this.handleTimezoneChange.bind(this);
@@ -33,10 +57,10 @@ class TimezoneAutocomplete extends React.PureComponent {
 
     handleTimezoneChange(selection) {
         const { onTimezoneChange } = this.props;
-        const { city, zoneAbbr } = timeHelper.deconstructTzDisplay(selection);
+        const { city, zoneAbbr } = parseTimezone(selection);
         const zoneObject = timeHelper.tzForCityAndZoneAbbr(city, zoneAbbr);
         if (zoneObject) {
-            this.setState({ timezone: timeHelper.tzDisplay(zoneObject) });
+            this.setState({ timezone: formatTimezone(zoneObject) });
             if (onTimezoneChange) onTimezoneChange(zoneObject);
         }
     }
@@ -68,7 +92,7 @@ class TimezoneAutocomplete extends React.PureComponent {
                         wrapperProps={wrapperProps}
                         items={timeHelper.tzMaps}
                         shouldItemRender={timeHelper.isValueInCityOrZone}
-                        getItemValue={timeHelper.tzDisplay}
+                        getItemValue={formatTimezone}
                         sortItems={timeHelper.compareByCityAndZone}
                         renderItem={TimezoneOption}
                         value={timezone}

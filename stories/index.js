@@ -7,15 +7,20 @@ import '../styles/timezone.css';
 
 import TimezoneAutocomplete from '../src/index';
 
+import InjectedAutocomplete from './examples/InjectedAutocomplete';
+
 
 storiesOf('Timezones', module)
     .addDecorator(withKnobs)
-    .add('with timezone picker', () => (
+    .add('with TimezoneAutocomplete Component', () => (
         <TimezoneAutocomplete
             phrases={{
                 timezonePickerLabel: text('timezonePickerLabel phrase', 'Closest City or Timezone')
             }}
             onTimezoneChange={action('onTimezoneChange')}
         />
+    ))
+    .add('with injectTimezone HOC', () => (
+        <InjectedAutocomplete />
     ));
 
