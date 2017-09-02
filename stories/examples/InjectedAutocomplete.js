@@ -13,6 +13,22 @@ export const formatTimezone = (timezone) => {
     return `${timezone.city}${TIMEZONE_PARTS_DELIMITER}${timezone.zoneAbbr}`;
 };
 
+export const parseTimezone = (timezoneDisplay) => {
+    if (!timezoneDisplay) return undefined;
+
+    const delimiterStart = timezoneDisplay.indexOf(TIMEZONE_PARTS_DELIMITER);
+    const delimiterEnd = delimiterStart + TIMEZONE_PARTS_DELIMITER.length;
+    const city = timezoneDisplay.substring(0, delimiterStart);
+    const zoneAbbr = timezoneDisplay.substring(delimiterEnd);
+
+    if (!city || !zoneAbbr) return undefined;
+
+    return {
+        city,
+        zoneAbbr
+    };
+};
+
 export const TimezoneOption = (item, isHighlighted) => (
     <div
         key={`${item.zoneName}-${item.zoneAbbr}`}
@@ -31,16 +47,26 @@ class InjectedAutocomplete extends React.PureComponent {
 
         const { timezone } = this.props;
 
-        const guessedTimezone = timezone.helper.guessCurrent();
-
         this.state = {
-            timezoneValue: formatTimezone(guessedTimezone)
+            inputValue: formatTimezone(timezone.value)
         };
+
+        this.handleTimezoneChange = this.handleTimezoneChange.bind(this);
+    }
+
+    handleTimezoneChange(selection) {
+        const { timezone } = this.props;
+        const { city, zoneAbbr } = parseTimezone(selection);
+        const zoneObject = timezone.helper.search({ city, zoneAbbr })[0];
+        if (zoneObject) {
+            timezone.helper.change(zoneObject);
+            this.setState({ inputValue: formatTimezone(zoneObject) });
+        }
     }
 
     render() {
         const { timezone } = this.props;
-        const { timezoneValue } = this.state;
+        const { inputValue } = this.state;
 
         const phrases = {
             timezonePickerLabel: 'Closest City or Timezone'
@@ -64,15 +90,15 @@ class InjectedAutocomplete extends React.PureComponent {
                     </label>
                     <Autocomplete
                         id="timezone-picker-search-input"
-                        onChange={(event, value) => this.setState({ timezoneValue: value })}
-                        onSelect={value => this.setState({ timezoneValue: value })}
+                        onChange={(event, value) => this.setState({ inputValue: value })}
+                        onSelect={value => this.handleTimezoneChange(value)}
                         menuStyle={menuStyle}
                         items={timezone.helper.allTimezones}
                         shouldItemRender={(item, searchValue) => timezone.helper.match(item, searchValue)}
                         getItemValue={item => formatTimezone(item)}
                         sortItems={(item1, item2) => timezone.helper.compare(item1, item2)}
                         renderItem={TimezoneOption}
-                        value={timezoneValue}
+                        value={inputValue}
                     />
                 </div>
             </div>

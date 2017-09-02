@@ -25,6 +25,16 @@ export default function injectTimezone(WrappedComponent, options = {}) {
     } = options;
 
     class InjectTimezone extends Component {
+        constructor(props) {
+            super(props);
+
+            this.state = {
+                timezoneValue: timeHelper.guessUserTz()
+            };
+
+            this.change = this.change.bind(this);
+        }
+
         getWrappedInstance() {
             invariant(withRef,
                 '[React Timezone] To access the wrapped instance, ' +
@@ -35,11 +45,21 @@ export default function injectTimezone(WrappedComponent, options = {}) {
             return this.wrapped;
         }
 
+        change(newValue) {
+            if (newValue) {
+                this.setState({
+                    timezoneValue: newValue
+                });
+            }
+        }
+
         render() {
+            const { timezoneValue } = this.state;
             const timezoneProps = {
-                value: timeHelper.guessUserTz(),
+                value: timezoneValue,
                 helper: {
                     allTimezones: timezoneData,
+                    change: this.change,
                     search: timeHelper.tzSearch,
                     guessCurrent: timeHelper.guessUserTz,
                     match: timeHelper.isValueInCityOrZone,

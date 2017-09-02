@@ -11,6 +11,7 @@ export const timezoneValuePropTypes = {
 
 export const timezoneHelperPropTypes = {
     allTimezones: arrayOf(timezoneValuePropTypes),
+    change: func.isRequired,
     search: func.isRequired,
     guessCurrent: func.isRequired,
     match: func.isRequired,
