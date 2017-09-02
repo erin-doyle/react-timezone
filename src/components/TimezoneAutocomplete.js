@@ -68,7 +68,6 @@ class TimezoneAutocomplete extends React.PureComponent {
 
     render() {
         const {
-            phrases,
             inputProps,
             menuStyle,
             onMenuVisibilityChange,
@@ -78,36 +77,26 @@ class TimezoneAutocomplete extends React.PureComponent {
         const { timezone } = this.state;
 
         return (
-            <div className="timezone_picker_container">
-                <div className="timezone_picker_search">
-                    <label id="timezone-picker-search-label" htmlFor="timezone-picker-search-input">
-                        {phrases.timezonePickerLabel}
-                    </label>
-                    <Autocomplete
-                        id="timezone-picker-search-input"
-                        onChange={(event, value) => this.setState({ timezone: value })}
-                        onSelect={value => this.handleTimezoneChange(value)}
-                        onMenuVisibilityChange={onMenuVisibilityChange}
-                        menuStyle={menuStyle}
-                        inputProps={inputProps}
-                        wrapperProps={wrapperProps}
-                        items={timeHelper.tzMaps}
-                        shouldItemRender={timeHelper.isValueInCityOrZone}
-                        getItemValue={formatTimezone}
-                        sortItems={timeHelper.compareByCityAndZone}
-                        renderItem={TimezoneOption}
-                        value={timezone}
-                    />
-                </div>
-            </div>
+            <Autocomplete
+                id="timezone-picker-search-input"
+                onChange={(event, value) => this.setState({ timezone: value })}
+                onSelect={value => this.handleTimezoneChange(value)}
+                onMenuVisibilityChange={onMenuVisibilityChange}
+                menuStyle={menuStyle}
+                inputProps={inputProps}
+                wrapperProps={wrapperProps}
+                items={timeHelper.tzMaps}
+                shouldItemRender={timeHelper.isValueInCityOrZone}
+                getItemValue={formatTimezone}
+                sortItems={timeHelper.compareByCityAndZone}
+                renderItem={TimezoneOption}
+                value={timezone}
+            />
         );
     }
 }
 
 TimezoneAutocomplete.defaultProps = {
-    phrases: {
-        timezonePickerLabel: 'Closest City or Timezone'
-    },
     onTimezoneChange: () => {},
     onMenuVisibilityChange: () => {},
     inputProps: {},
@@ -125,7 +114,6 @@ TimezoneAutocomplete.defaultProps = {
 };
 
 TimezoneAutocomplete.propTypes = {
-    phrases: PropTypes.object,
     onTimezoneChange: PropTypes.func,
     onMenuVisibilityChange: PropTypes.func,
     inputProps: PropTypes.object,

@@ -68,9 +68,6 @@ class InjectedAutocomplete extends React.PureComponent {
         const { timezone } = this.props;
         const { inputValue } = this.state;
 
-        const phrases = {
-            timezonePickerLabel: 'Closest City or Timezone'
-        };
         const menuStyle = {
             borderRadius: '2px',
             boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
@@ -83,25 +80,18 @@ class InjectedAutocomplete extends React.PureComponent {
         };
 
         return (
-            <div className="timezone_picker_container">
-                <div className="timezone_picker_search">
-                    <label id="timezone-picker-search-label" htmlFor="timezone-picker-search-input">
-                        {phrases.timezonePickerLabel}
-                    </label>
-                    <Autocomplete
-                        id="timezone-picker-search-input"
-                        onChange={(event, value) => this.setState({ inputValue: value })}
-                        onSelect={value => this.handleTimezoneChange(value)}
-                        menuStyle={menuStyle}
-                        items={timezone.helper.allTimezones}
-                        shouldItemRender={(item, searchValue) => timezone.helper.match(item, searchValue)}
-                        getItemValue={item => formatTimezone(item)}
-                        sortItems={(item1, item2) => timezone.helper.compare(item1, item2)}
-                        renderItem={TimezoneOption}
-                        value={inputValue}
-                    />
-                </div>
-            </div>
+            <Autocomplete
+                id="timezone-picker-search-input"
+                onChange={(event, value) => this.setState({ inputValue: value })}
+                onSelect={value => this.handleTimezoneChange(value)}
+                menuStyle={menuStyle}
+                items={timezone.helper.allTimezones}
+                shouldItemRender={(item, searchValue) => timezone.helper.match(item, searchValue)}
+                getItemValue={item => formatTimezone(item)}
+                sortItems={(item1, item2) => timezone.helper.compare(item1, item2)}
+                renderItem={TimezoneOption}
+                value={inputValue}
+            />
         );
     }
 }
