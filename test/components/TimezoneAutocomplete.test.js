@@ -21,10 +21,6 @@ describe('TimezoneAutocomplete', () => {
             />
         );
 
-        it('should render a label for the search field', () => {
-            expect(wrapper.find('.timezone_picker_search').find('label').text()).toBe(mockPhrases.timezonePickerLabel);
-        });
-
         it('should render an Autocomplete', () => {
             expect(wrapper.find('Autocomplete').exists()).toBeTruthy();
         });
