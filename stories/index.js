@@ -5,7 +5,7 @@ import { action } from '@storybook/addon-actions';
 
 import '../styles/timezone.css';
 
-import TimezoneAutocomplete from '../src/index';
+import TimezoneAutocomplete from '../index';
 
 import InjectedAutocomplete from './examples/InjectedAutocomplete';
 

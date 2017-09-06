@@ -1,3 +1,6 @@
 node_modules/*
 **/tests/*
 **/__mocks__/*
+lib/
+.storybook/
+index.js

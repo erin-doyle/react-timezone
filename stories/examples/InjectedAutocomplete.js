@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames/dedupe';
 import Autocomplete from 'react-autocomplete';
 
-import { injectTimezone } from '../../src/index';
+import { injectTimezone } from '../../index';
 
 
 const TIMEZONE_PARTS_DELIMITER = ' - ';
