@@ -1,6 +1,6 @@
 {
   "name": "@cashstar/react-timezone",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A timezone picker widget in React",
   "main": "index.js",
   "scripts": {
