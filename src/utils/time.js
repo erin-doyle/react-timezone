@@ -5,6 +5,7 @@ import tzMaps from '../data/timezoneData';
 
 
 const tzSearch = ({ city, zoneName, zoneAbbr }) => (
+    // TODO: use a faster search algorithm
     tzMaps.filter(tzMap => (
         ((city && tzMap.city === city) || !city) &&
         ((zoneName && tzMap.zoneName === zoneName) || !zoneName) &&
