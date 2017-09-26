@@ -26,8 +26,8 @@ describe('TimezoneAutocomplete', () => {
         });
     });
 
-    describe('handle timezone change func', () => {
-        it('should callback when timezone change', () => {
+    describe('handle timezone change function', () => {
+        it('should callback when timezone changes', () => {
             const onTimezoneChangeStub = jest.fn();
             const wrapper = shallow(
                 <TimezoneAutocomplete
@@ -36,7 +36,7 @@ describe('TimezoneAutocomplete', () => {
                 />
             );
             wrapper.instance().handleTimezoneChange(`${mockTimezone.city} - ${mockTimezone.zoneAbbr}`);
-            expect(onTimezoneChangeStub.mock.calls.length).toBe(1);
+            expect(onTimezoneChangeStub.mock.calls).toHaveLength(1);
             expect(onTimezoneChangeStub).toBeCalledWith(mockTimezone);
         });
     });

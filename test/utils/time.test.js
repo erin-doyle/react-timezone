@@ -32,7 +32,7 @@ describe('Time utils', () => {
             expect(result[0].zoneName).toEqual(nameToSearchFor);
         });
 
-        it('should return undefined when a timezone object does not exist containing the provided name', () => {
+        it('should return an empty array when a timezone object does not exist containing the provided name', () => {
             const nameToSearchFor = 'Some Name that should not exist in the Timezone data';
             const result = timeHelper.tzSearch({ zoneName: nameToSearchFor });
             expect(result).toHaveLength(0);
@@ -49,10 +49,31 @@ describe('Time utils', () => {
             expect(result[0].zoneAbbr).toEqual(zoneToSearchFor);
         });
 
-        it('should return undefined when a timezone object does not exist containing the provided city and zone abbreviation', () => {
+        it('should return an empty array when a timezone object does not exist containing the provided city and zone abbreviation', () => {
             const cityToSearchFor = 'Some City that should not exist in the Timezone data';
             const zoneToSearchFor = 'ABCDEFG';
             const result = timeHelper.tzSearch({ city: cityToSearchFor, zoneAbbr: zoneToSearchFor });
+            expect(result).toHaveLength(0);
+        });
+    });
+
+    describe('tzSearch with filterFields that do not exist', () => {
+        it('should return an empty array if passed only filterFields that do not exist on the timezone object', () => {
+            const result = timeHelper.tzSearch({
+                fieldOneThatDoesntExist: 'someValue',
+                fieldTwoThatDoesntExist: 'someOtherValue'
+            });
+            expect(result).toHaveLength(0);
+        });
+
+        it('should return an empty array if passed any filterFields that do not exist on the timezone object along with any that do exist', () => {
+            const cityToSearchFor = 'New York';
+            const zoneToSearchFor = 'EDT';
+            const result = timeHelper.tzSearch({
+                fieldOneThatDoesntExist: 'someValue',
+                city: cityToSearchFor,
+                zoneAbbr: zoneToSearchFor
+            });
             expect(result).toHaveLength(0);
         });
     });

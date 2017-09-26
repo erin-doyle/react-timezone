@@ -5,13 +5,22 @@
  * @return {boolean}
  */
 const isMatch = (input, string) => {
+    if (!input || !string || typeof input !== 'string' || typeof string !== 'string') return false;
     const valueToSearchFor = input.toLowerCase();
     const stringToSearchIn = string.toLowerCase();
 
     return stringToSearchIn.indexOf(valueToSearchFor) !== -1;
 };
 
-
+/**
+ * Predicate function to pass to a filter() Array function returning
+ * true or false as to whether the text matches the item.
+ * @param {string|Object} item - the item to search within
+ * @param {string} text - the text to search for in the item
+ * @param {Object} filterOptions - options used for filtering which include:
+ *      {Array} fields - the fields to use to search against on the item
+ * @return {boolean}
+ */
 const filterBy = (item, text, filterOptions) => {
     const fields = filterOptions.fields.slice();
 
