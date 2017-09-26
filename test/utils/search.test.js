@@ -45,6 +45,34 @@ describe('Search utils', () => {
             const result = searchHelper.isMatch(input, string);
             expect(result).toBeFalsy();
         });
+
+        it('should return false when input is not a string', () => {
+            const input = 12345;
+            const string = 'Here is a String.';
+            const result = searchHelper.isMatch(input, string);
+            expect(result).toBeFalsy();
+        });
+
+        it('should return false when string is not a string', () => {
+            const input = 'Here is a String';
+            const string = 12345;
+            const result = searchHelper.isMatch(input, string);
+            expect(result).toBeFalsy();
+        });
+
+        it('should return false when input is empty', () => {
+            const input = '';
+            const string = 'Here is a String.';
+            const result = searchHelper.isMatch(input, string);
+            expect(result).toBeFalsy();
+        });
+
+        it('should return false when string is empty', () => {
+            const input = 'Here is a String';
+            const string = '';
+            const result = searchHelper.isMatch(input, string);
+            expect(result).toBeFalsy();
+        });
     });
 
     describe('filterBy', () => {

@@ -1,15 +1,23 @@
 import moment from 'moment-timezone';
 
-import { head } from './func';
 import tzMaps from '../data/timezoneData';
 
+import { head } from './func';
+import searchHelper from './search';
 
-const tzSearch = ({ city, zoneName, zoneAbbr }) => (
-    // TODO: use a faster search algorithm
-    tzMaps.filter(tzMap => (
-        ((city && tzMap.city === city) || !city) &&
-        ((zoneName && tzMap.zoneName === zoneName) || !zoneName) &&
-        ((zoneAbbr && tzMap.zoneAbbr === zoneAbbr) || !zoneAbbr)
+
+/**
+ * Performs a search for any timezone objects that match the filter criteria
+ * provided in the filterFields argument
+ * @param {Object} filterFields
+ * @returns {Array} of matching timezone objects
+ */
+const tzSearch = filterFields => (
+    // TODO: use Observable
+    tzMaps.filter(timezone => (
+        Object.keys(filterFields).reduce((isMatchSoFar, nextFilterField) => (
+            isMatchSoFar && searchHelper.isMatch(timezone[nextFilterField], filterFields[nextFilterField])
+        ), true)
     ))
 );
 
@@ -50,11 +58,22 @@ const isValueInCityOrZone = (timezone, searchValue) => {
     // the search should ignore case
     const regexSearchValue = new RegExp(searchValue, 'i');
 
-    // TODO: is this sufficient for matching?
+    // TODO: use filterBy from search.js after transforming each item
+    // using getSearchValue, all using an Observable
     return (
         timezone.city.search(regexSearchValue) !== -1 ||
         timezone.zoneAbbr.search(regexSearchValue) !== -1
     );
+
+    /*
+     option => defaultFilterBy(
+     option,
+     text,
+     labelKey,
+     multiple && !!find(selected, o => isEqual(o, option)),
+     {caseSensitive, ignoreDiacritics, fields: filterBy}
+     )
+     */
 };
 
 const compareByCityAndZone = (timezone1, timezone2) => {
