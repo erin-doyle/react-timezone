@@ -56,9 +56,10 @@ class TimezoneAutocomplete extends React.PureComponent {
 
         this.handleTimezoneChange = this.handleTimezoneChange.bind(this);
 
-        // bind partial function passing in the minLength argument
-        this.shouldItemRenderAfterMinLengthEntered =
-            timeHelper.isValueInCityOrZone.bind(this, null, null, minLength);
+        // create partial function passing in the minLength argument
+        this.shouldItemRenderAfterMinLengthEntered = (timezoneItem, searchValue) => (
+            timeHelper.isValueInCityOrZone(timezoneItem, searchValue, minLength)
+        );
     }
 
     handleTimezoneChange(selection) {
