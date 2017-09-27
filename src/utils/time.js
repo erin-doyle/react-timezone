@@ -52,28 +52,21 @@ const guessUserTz = () => {
     return head(tzSearch({ zoneName: userTz }));
 };
 
+/**
+ * Returns true or false as to whether the searchValue is contained in
+ * the city or zone abbreviation of the timezone
+ * @param {Object} timezone
+ * @param {string} searchValue
+ * @return {boolean}
+ */
 const isValueInCityOrZone = (timezone, searchValue) => {
     if (!timezone || !searchValue) return false;
 
-    // the search should ignore case
-    const regexSearchValue = new RegExp(searchValue, 'i');
-
-    // TODO: use filterBy from search.js after transforming each item
-    // using getSearchValue, all using an Observable
-    return (
-        timezone.city.search(regexSearchValue) !== -1 ||
-        timezone.zoneAbbr.search(regexSearchValue) !== -1
+    return searchHelper.filterBy(
+        timezone,
+        searchValue,
+        { fields: ['city', 'zoneAbbr'] }
     );
-
-    /*
-     option => defaultFilterBy(
-     option,
-     text,
-     labelKey,
-     multiple && !!find(selected, o => isEqual(o, option)),
-     {caseSensitive, ignoreDiacritics, fields: filterBy}
-     )
-     */
 };
 
 const compareByCityAndZone = (timezone1, timezone2) => {
