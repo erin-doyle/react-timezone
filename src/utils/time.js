@@ -6,6 +6,12 @@ import { head } from './func';
 import searchHelper from './search';
 
 
+const getMatchChecker = (timezoneToSearch, fieldsToFilterBy) => (
+    filterField => (
+        searchHelper.isMatch(timezoneToSearch[filterField], fieldsToFilterBy[filterField])
+    )
+);
+
 /**
  * Performs a search for any timezone objects that match the filter criteria
  * provided in the filterFields argument
@@ -14,11 +20,10 @@ import searchHelper from './search';
  */
 const tzSearch = filterFields => (
     // TODO: use Observable
-    tzMaps.filter(timezone => (
-        Object.keys(filterFields).reduce((isMatchSoFar, nextFilterField) => (
-            isMatchSoFar && searchHelper.isMatch(timezone[nextFilterField], filterFields[nextFilterField])
-        ), true)
-    ))
+    tzMaps.filter((timezone) => {
+        const isFieldMatchToTimezone = getMatchChecker(timezone, filterFields);
+        return Object.keys(filterFields).every(isFieldMatchToTimezone);
+    })
 );
 
 const guessUserTz = () => {
@@ -60,7 +65,7 @@ const guessUserTz = () => {
  * @param {number} [minLength] - the minimum length the text must be before filtering is allowed
  * @return {boolean}
  */
-const isValueInCityOrZone = (timezone, searchValue, minLength) => {
+const isValueInCityOrZone = (timezone, searchValue, minLength = 1) => {
     if (!timezone || !searchValue) return false;
 
     return searchHelper.filterBy(
