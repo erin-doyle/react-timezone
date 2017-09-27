@@ -28,10 +28,16 @@ storiesOf('TimezoneAutocomplete Component', module)
             onTimezoneChange={action('onTimezoneChange')}
         />
     ))
-    .add('with minLength of 3', () => (
+    .add('with minLength of 5', () => (
         <TimezoneAutocomplete
             onTimezoneChange={action('onTimezoneChange')}
-            minLength={number('minLength', 3)}
+            minLength={number('minLength', 5)}
+        />
+    ))
+    .add('with minLength of 1', () => (
+        <TimezoneAutocomplete
+            onTimezoneChange={action('onTimezoneChange')}
+            minLength={number('minLength', 1)}
         />
     ));
 
