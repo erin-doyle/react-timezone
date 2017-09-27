@@ -19,10 +19,14 @@ const isMatch = (input, string) => {
  * @param {string} text - the text to search for in the item
  * @param {Object} filterOptions - options used for filtering which include:
  *      {Array} fields - the fields to use to search against on the item
+ *      {number} minLength - the minimum length the text must be before filtering is allowed
  * @return {boolean}
  */
 const filterBy = (item, text, filterOptions) => {
     const fields = filterOptions.fields.slice();
+    const minLength = filterOptions.minLength || 1;
+
+    if (text.length < minLength) return false;
 
     if (fields.length) {
         return fields.some((field) => {

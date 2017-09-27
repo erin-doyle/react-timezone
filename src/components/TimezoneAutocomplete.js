@@ -47,6 +47,7 @@ class TimezoneAutocomplete extends React.PureComponent {
     constructor(props) {
         super(props);
 
+        const { minLength } = this.props;
         const guessedTimezone = timeHelper.guessUserTz();
 
         this.state = {
@@ -54,6 +55,10 @@ class TimezoneAutocomplete extends React.PureComponent {
         };
 
         this.handleTimezoneChange = this.handleTimezoneChange.bind(this);
+
+        // bind partial function passing in the minLength argument
+        this.shouldItemRenderAfterMinLengthEntered =
+            timeHelper.isValueInCityOrZone.bind(this, null, null, minLength);
     }
 
     handleTimezoneChange(selection) {
@@ -86,7 +91,7 @@ class TimezoneAutocomplete extends React.PureComponent {
                 inputProps={inputProps}
                 wrapperProps={wrapperProps}
                 items={timeHelper.tzMaps}
-                shouldItemRender={timeHelper.isValueInCityOrZone}
+                shouldItemRender={this.shouldItemRenderAfterMinLengthEntered}
                 getItemValue={formatTimezone}
                 sortItems={timeHelper.compareByCityAndZone}
                 renderItem={TimezoneOption}
@@ -110,7 +115,8 @@ TimezoneAutocomplete.defaultProps = {
         width: '100%',
         minWidth: 'initial'
     },
-    wrapperProps: {}
+    wrapperProps: {},
+    minLength: 3
 };
 
 TimezoneAutocomplete.propTypes = {
@@ -118,7 +124,8 @@ TimezoneAutocomplete.propTypes = {
     onMenuVisibilityChange: PropTypes.func,
     inputProps: PropTypes.object,
     menuStyle: PropTypes.object,
-    wrapperProps: PropTypes.object
+    wrapperProps: PropTypes.object,
+    minLength: PropTypes.number
 };
 
 export default TimezoneAutocomplete;

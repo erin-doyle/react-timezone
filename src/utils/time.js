@@ -57,15 +57,16 @@ const guessUserTz = () => {
  * the city or zone abbreviation of the timezone
  * @param {Object} timezone
  * @param {string} searchValue
+ * @param {number} [minLength] - the minimum length the text must be before filtering is allowed
  * @return {boolean}
  */
-const isValueInCityOrZone = (timezone, searchValue) => {
+const isValueInCityOrZone = (timezone, searchValue, minLength) => {
     if (!timezone || !searchValue) return false;
 
     return searchHelper.filterBy(
         timezone,
         searchValue,
-        { fields: ['city', 'zoneAbbr'] }
+        { fields: ['city', 'zoneAbbr'], minLength }
     );
 };
 
