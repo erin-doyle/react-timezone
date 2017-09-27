@@ -143,9 +143,23 @@ describe('Search utils', () => {
         });
 
         it('returns no results if the text doesn\'t find a match', () => {
-            const text = 'zzz';
+            const text = 'zzzzzzzz';
             const filterOptions = {
                 fields: []
+            };
+
+            const results = tzMaps.filter(timezone => (
+                searchHelper.filterBy(timezone.city, text, filterOptions)
+            ));
+
+            expect(results).toHaveLength(0);
+        });
+
+        it('returns no results if the text doesn\'t meet the min length', () => {
+            const text = 'New';
+            const filterOptions = {
+                fields: [],
+                minLength: 4
             };
 
             const results = tzMaps.filter(timezone => (
