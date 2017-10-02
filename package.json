@@ -13,6 +13,8 @@
     "test:jest": "jest",
     "test:nocache": "jest --no-cache",
     "test:watch": "jest --watch",
+    "precover": "rimraf coverage",
+    "cover": "NODE_ENV=test node --max-old-space-size=2048 $(which nyc) npm run test:jest",
     "storybook": "start-storybook -p 9001 -c .storybook",
     "tag": "git tag v$npm_package_version",
     "version:patch": "npm --no-git-tag-version version patch",
@@ -37,9 +39,11 @@
   "homepage": "https://github.com/erin-doyle/react-timezone#readme",
   "dependencies": {
     "classnames": "^2.2.5",
+    "coveralls": "^3.0.0",
     "invariant": "^2.2.2",
     "moment": "^2.18.1",
     "moment-timezone": "^0.5.13",
+    "nyc": "^11.2.1",
     "react": "^15.6.1",
     "react-autocomplete": "^1.7.1",
     "react-dom": "^15.6.1"

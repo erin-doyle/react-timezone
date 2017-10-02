@@ -1,8 +1,28 @@
 language: node_js
 node_js:
-  - 6
-  - 8
-cache:
-  directories:
-  - node_modules
-  - yarn: true
+  - "8"
+  - "7"
+  - "6"
+  - "4"
+  - "iojs"
+script:
+  - 'if [ -n "${LINT-}" ]; then npm run lint ; fi'
+  - 'if [ "${TEST-}" = true ]; then npm run test:jest ; fi'
+  - 'if [ -n "${COVERAGE-}" ] && [ "${TRAVIS_BRANCH-}" = "master" ]; then npm run cover; cat ./coverage/lcov.info | ./node_modules/.bin/coveralls ; fi'
+env:
+  global:
+    - TEST=true
+  matrix:
+    - REACT=0.14
+    - REACT=15
+    - REACT=16
+sudo: false
+matrix:
+  fast_finish: true
+  include:
+    - node_js: "node"
+      env: COVERAGE=true TEST=false
+    - node_js: "node"
+      env: LINT=true TEST=false
+allow_failures:
+  - env: REACT=16
