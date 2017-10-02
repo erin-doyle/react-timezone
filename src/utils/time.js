@@ -1,16 +1,29 @@
 import moment from 'moment-timezone';
 
-import { head } from './func';
 import tzMaps from '../data/timezoneData';
 
+import { head } from './func';
+import searchHelper from './search';
 
-const tzSearch = ({ city, zoneName, zoneAbbr }) => (
-    // TODO: use a faster search algorithm
-    tzMaps.filter(tzMap => (
-        ((city && tzMap.city === city) || !city) &&
-        ((zoneName && tzMap.zoneName === zoneName) || !zoneName) &&
-        ((zoneAbbr && tzMap.zoneAbbr === zoneAbbr) || !zoneAbbr)
-    ))
+
+const getMatchChecker = (timezoneToSearch, fieldsToFilterBy) => (
+    filterField => (
+        searchHelper.isMatch(timezoneToSearch[filterField], fieldsToFilterBy[filterField])
+    )
+);
+
+/**
+ * Performs a search for any timezone objects that match the filter criteria
+ * provided in the filterFields argument
+ * @param {Object} filterFields
+ * @returns {Array} of matching timezone objects
+ */
+const tzSearch = filterFields => (
+    // TODO: use Observable
+    tzMaps.filter((timezone) => {
+        const isFieldMatchToTimezone = getMatchChecker(timezone, filterFields);
+        return Object.keys(filterFields).every(isFieldMatchToTimezone);
+    })
 );
 
 const guessUserTz = () => {
@@ -44,16 +57,21 @@ const guessUserTz = () => {
     return head(tzSearch({ zoneName: userTz }));
 };
 
-const isValueInCityOrZone = (timezone, searchValue) => {
+/**
+ * Returns true or false as to whether the searchValue is contained in
+ * the city or zone abbreviation of the timezone
+ * @param {Object} timezone
+ * @param {string} searchValue
+ * @param {number} [minLength] - the minimum length the text must be before filtering is allowed
+ * @return {boolean}
+ */
+const isValueInCityOrZone = (timezone, searchValue, minLength = 1) => {
     if (!timezone || !searchValue) return false;
 
-    // the search should ignore case
-    const regexSearchValue = new RegExp(searchValue, 'i');
-
-    // TODO: is this sufficient for matching?
-    return (
-        timezone.city.search(regexSearchValue) !== -1 ||
-        timezone.zoneAbbr.search(regexSearchValue) !== -1
+    return searchHelper.filterBy(
+        timezone,
+        searchValue,
+        { fields: ['city', 'zoneAbbr'], minLength }
     );
 };
 
