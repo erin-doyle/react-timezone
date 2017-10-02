@@ -9,8 +9,11 @@ node_js:
 
 script:
   - yarn run lint
-  # cover will also run test:jest
-  - 'yarn run cover; cat ./coverage/lcov.info | ./node_modules/.bin/coveralls;'
+  # coveralls will run test:jest
+  - yarn run coveralls
   - yarn run build
 
 cache: yarn
+
+matrix:
+  fast_finish: true
