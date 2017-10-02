@@ -2,7 +2,7 @@
 Timezone picker widget using React
 
 ### TravisCI
-[![Build Status](https://travis-ci.org/boennemann/badges.svg?branch=master)](https://travis-ci.org/boennemann/badges)
+[![Build Status]](https://github.com/erin-doyle/react-timezone)
 
 ### Coveralls
-[![Coverage Status](https://coveralls.io/repos/boennemann/badges/badge.svg)](https://coveralls.io/r/boennemann/badges)
+[![Coverage Status]](https://github.com/erin-doyle/react-timezone)
