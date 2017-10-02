@@ -14,8 +14,6 @@
     "test:coverage": "jest --coverage",
     "test:nocache": "jest --no-cache",
     "test:watch": "jest --watch",
-    "precover": "rimraf coverage && mkdir -p ./coverage/",
-    "cover": "NODE_ENV=test node --max-old-space-size=2048 $(which nyc) npm run test:jest",
     "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "storybook": "start-storybook -p 9001 -c .storybook",
     "tag": "git tag v$npm_package_version",
@@ -45,7 +43,6 @@
     "invariant": "^2.2.2",
     "moment": "^2.18.1",
     "moment-timezone": "^0.5.13",
-    "nyc": "^11.2.1",
     "react": "^15.6.1",
     "react-autocomplete": "^1.7.1",
     "react-dom": "^15.6.1"
