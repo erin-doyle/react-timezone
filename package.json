@@ -11,6 +11,7 @@
     "lint:fix": "eslint src test --fix",
     "test": "npm run lint && npm run test:jest",
     "test:jest": "jest",
+    "test:coverage": "jest --coverage",
     "test:nocache": "jest --no-cache",
     "test:watch": "jest --watch",
     "precover": "rimraf coverage && mkdir -p ./coverage/",
