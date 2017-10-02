@@ -13,7 +13,7 @@
     "test:jest": "jest",
     "test:nocache": "jest --no-cache",
     "test:watch": "jest --watch",
-    "precover": "rimraf coverage && mkdir ./coverage",
+    "precover": "rimraf coverage && mkdir -p ./coverage/",
     "cover": "NODE_ENV=test node --max-old-space-size=2048 $(which nyc) npm run test:jest",
     "storybook": "start-storybook -p 9001 -c .storybook",
     "tag": "git tag v$npm_package_version",
