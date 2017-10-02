@@ -4,7 +4,6 @@ node_js:
   - "7"
   - "6"
   - "4"
-  - "iojs"
 script:
   - 'if [ -n "${LINT-}" ]; then npm run lint ; fi'
   - 'if [ "${TEST-}" = true ]; then npm run test:jest ; fi'
@@ -12,10 +11,11 @@ script:
 env:
   global:
     - TEST=true
-  matrix:
-    - REACT=0.14
-    - REACT=15
-    - REACT=16
+# TODO: implement creating environments for each major React version
+#  matrix:
+#    - REACT=0.14
+#    - REACT=15
+#    - REACT=16
 sudo: false
 matrix:
   fast_finish: true
@@ -24,5 +24,5 @@ matrix:
       env: COVERAGE=true TEST=false
     - node_js: "node"
       env: LINT=true TEST=false
-allow_failures:
-  - env: REACT=16
+#allow_failures:
+#  - env: REACT=16
