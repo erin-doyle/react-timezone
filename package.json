@@ -15,7 +15,7 @@
     "test:watch": "jest --watch",
     "precover": "rimraf coverage && mkdir -p ./coverage/",
     "cover": "NODE_ENV=test node --max-old-space-size=2048 $(which nyc) npm run test:jest",
-    "coveralls": "nyc npm test:jest && nyc report --reporter=text-lcov | coveralls",
+    "coveralls": "nyc npm run test:jest && nyc report --reporter=text-lcov | coveralls",
     "storybook": "start-storybook -p 9001 -c .storybook",
     "tag": "git tag v$npm_package_version",
     "version:patch": "npm --no-git-tag-version version patch",
