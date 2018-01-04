@@ -1,6 +1,11 @@
 import tzMaps from '../../src/data/timezoneData';
 import searchHelper from '../../src/utils/search';
-
+import {
+    EASTERN_TZ,
+    PACIFIC_TZ,
+    CENTRAL_TZ,
+    NEWFOUNDLAND_TZ
+} from '../testUtils';
 
 describe('Search utils', () => {
     describe('isMatch', () => {
@@ -87,10 +92,10 @@ describe('Search utils', () => {
             ));
 
             expect(results).toEqual([
-                { city: 'New York', zoneName: 'America/New_York', zoneAbbr: 'EDT' },
-                { city: 'New Salem', zoneName: 'America/North_Dakota/New_Salem', zoneAbbr: 'CDT' },
-                { city: 'Canada/Newfoundland', zoneName: 'Canada/Newfoundland', zoneAbbr: 'NDT' },
-                { city: 'US/Pacific-New', zoneName: 'US/Pacific-New', zoneAbbr: 'PDT' }
+                { city: 'New York', zoneName: 'America/New_York', zoneAbbr: EASTERN_TZ },
+                { city: 'New Salem', zoneName: 'America/North_Dakota/New_Salem', zoneAbbr: CENTRAL_TZ },
+                { city: 'Canada/Newfoundland', zoneName: 'Canada/Newfoundland', zoneAbbr: NEWFOUNDLAND_TZ },
+                { city: 'US/Pacific-New', zoneName: 'US/Pacific-New', zoneAbbr: PACIFIC_TZ }
             ]);
         });
 
@@ -105,7 +110,7 @@ describe('Search utils', () => {
             ));
 
             expect(results).toEqual([
-                { city: 'New York', zoneName: 'America/New_York', zoneAbbr: 'EDT' }
+                { city: 'New York', zoneName: 'America/New_York', zoneAbbr: EASTERN_TZ }
             ]);
         });
 

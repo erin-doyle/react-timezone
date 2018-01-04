@@ -1,6 +1,6 @@
 /* eslint-disable max-len */ // lots of long test names and that's ok
 import timeHelper from '../../src/utils/time';
-
+import { EASTERN_TZ } from '../testUtils';
 
 const mockTimezone = {
     city: 'Some City',
@@ -42,7 +42,7 @@ describe('Time utils', () => {
     describe('tzSearch with city and abbr arguments', () => {
         it('should return the matching timezone object containing the provided city and zone abbreviation', () => {
             const cityToSearchFor = 'New York';
-            const zoneToSearchFor = 'EDT';
+            const zoneToSearchFor = EASTERN_TZ;
             const result = timeHelper.tzSearch({ city: cityToSearchFor, zoneAbbr: zoneToSearchFor });
             expect(result).toHaveLength(1);
             expect(result[0].city).toEqual(cityToSearchFor);
