@@ -8,7 +8,7 @@ import searchHelper from './search';
 
 const getMatchChecker = (timezoneToSearch, fieldsToFilterBy) => (
     filterField => (
-        searchHelper.isMatch(timezoneToSearch[filterField], fieldsToFilterBy[filterField])
+        searchHelper.isMatch(fieldsToFilterBy[filterField], timezoneToSearch[filterField])
     )
 );
 

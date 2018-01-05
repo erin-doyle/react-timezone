@@ -41,18 +41,36 @@ describe('Time utils', () => {
 
     describe('tzSearch with city and abbr arguments', () => {
         it('should return the matching timezone object containing the provided city and zone abbreviation', () => {
-            const cityToSearchFor = 'New York';
+            const cityToSearchFor = 'New';
             const zoneToSearchFor = EASTERN_TZ;
             const result = timeHelper.tzSearch({ city: cityToSearchFor, zoneAbbr: zoneToSearchFor });
             expect(result).toHaveLength(1);
-            expect(result[0].city).toEqual(cityToSearchFor);
-            expect(result[0].zoneAbbr).toEqual(zoneToSearchFor);
+            expect(result[0].city).toContain(cityToSearchFor);
+            expect(result[0].zoneAbbr).toContain(zoneToSearchFor);
         });
 
         it('should return an empty array when a timezone object does not exist containing the provided city and zone abbreviation', () => {
             const cityToSearchFor = 'Some City that should not exist in the Timezone data';
             const zoneToSearchFor = 'ABCDEFG';
             const result = timeHelper.tzSearch({ city: cityToSearchFor, zoneAbbr: zoneToSearchFor });
+            expect(result).toHaveLength(0);
+        });
+    });
+
+    describe('tzSearch with city and name arguments', () => {
+        it('should return the matching timezone object containing the provided city and zone name', () => {
+            const cityToSearchFor = 'New';
+            const zoneToSearchFor = 'America';
+            const result = timeHelper.tzSearch({ city: cityToSearchFor, zoneName: zoneToSearchFor });
+            expect(result).toHaveLength(2);
+            expect(result[0].city).toContain(cityToSearchFor);
+            expect(result[0].zoneName).toContain(zoneToSearchFor);
+        });
+
+        it('should return an empty array when a timezone object does not exist containing the provided city and zone name', () => {
+            const cityToSearchFor = 'Some City that should not exist in the Timezone data';
+            const zoneToSearchFor = 'ABCDEFG';
+            const result = timeHelper.tzSearch({ city: cityToSearchFor, zoneName: zoneToSearchFor });
             expect(result).toHaveLength(0);
         });
     });
