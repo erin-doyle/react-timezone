@@ -7,6 +7,8 @@ import '../styles/timezone.css';
 
 import { TimezoneAutocomplete } from '../index';
 
+import HelperEnabledAutocomplete from './examples/HelperEnabledAutocomplete';
+
 
 const LabelDecorator = storyFn => (
     <div className="timezone_picker_container">
@@ -89,11 +91,10 @@ storiesOf('TimezoneAutocomplete Component', module)
         />
     ));
 
-/*
-storiesOf('injectTimezone HOC', module)
+
+storiesOf('Autocomplete using helper functions', module)
     .addDecorator(withKnobs)
     .addDecorator(LabelDecorator)
     .add('default', () => (
-        <InjectedAutocomplete />
+        <HelperEnabledAutocomplete />
     ));
-*/

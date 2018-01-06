@@ -2,7 +2,13 @@ import React from 'react';
 import classNames from 'classnames/dedupe';
 import Autocomplete from 'react-autocomplete';
 
-import { injectTimezone } from '../../index';
+import {
+    getAllTimezones,
+    timezoneSearch,
+    guessUserTimezone,
+    isTimezoneMatch,
+    compareTimezones
+} from '../../index';
 
 
 const TIMEZONE_PARTS_DELIMITER = ' - ';
@@ -41,31 +47,28 @@ export const TimezoneOption = (item, isHighlighted) => (
 );
 
 
-class InjectedAutocomplete extends React.PureComponent {
+class HelperEnabledAutocomplete extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        const { timezone } = this.props;
+        const defaultTimezone = guessUserTimezone();
 
         this.state = {
-            inputValue: formatTimezone(timezone.value)
+            inputValue: formatTimezone(defaultTimezone)
         };
 
         this.handleTimezoneChange = this.handleTimezoneChange.bind(this);
     }
 
     handleTimezoneChange(selection) {
-        const { timezone } = this.props;
         const { city, zoneAbbr } = parseTimezone(selection);
-        const zoneObject = timezone.helper.search({ city, zoneAbbr })[0];
+        const zoneObject = timezoneSearch({ city, zoneAbbr })[0];
         if (zoneObject) {
-            timezone.helper.change(zoneObject);
             this.setState({ inputValue: formatTimezone(zoneObject) });
         }
     }
 
     render() {
-        const { timezone } = this.props;
         const { inputValue } = this.state;
 
         const menuStyle = {
@@ -85,10 +88,10 @@ class InjectedAutocomplete extends React.PureComponent {
                 onChange={(event, value) => this.setState({ inputValue: value })}
                 onSelect={value => this.handleTimezoneChange(value)}
                 menuStyle={menuStyle}
-                items={timezone.helper.allTimezones}
-                shouldItemRender={(item, searchValue) => timezone.helper.match(item, searchValue)}
+                items={getAllTimezones()}
+                shouldItemRender={(item, searchValue) => isTimezoneMatch(item, searchValue)}
                 getItemValue={item => formatTimezone(item)}
-                sortItems={(item1, item2) => timezone.helper.compare(item1, item2)}
+                sortItems={(item1, item2) => compareTimezones(item1, item2)}
                 renderItem={TimezoneOption}
                 value={inputValue}
             />
@@ -96,4 +99,4 @@ class InjectedAutocomplete extends React.PureComponent {
     }
 }
 
-export default injectTimezone(InjectedAutocomplete);
+export default HelperEnabledAutocomplete;
