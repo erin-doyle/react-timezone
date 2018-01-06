@@ -75,6 +75,15 @@ const isValueInCityOrZone = (timezone, searchValue, minLength = 1) => {
     );
 };
 
+/**
+ * Compares the city and zoneAbbr of the two provided timezones and returns:
+ *      1: when timezone1 has a city or zoneAbbr less than timezone2
+ *      -1: when timezone1 has a city or zoneAbbr greater than timezone2
+ *      0: when timezone1 and timezone2 are equal
+ * @param {object} timezone1
+ * @param {object} timezone2
+ * @return {number}
+ */
 const compareByCityAndZone = (timezone1, timezone2) => {
     const city1 = timezone1.city.toLowerCase();
     const zone1 = timezone1.zoneAbbr.toLowerCase();

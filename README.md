@@ -64,7 +64,7 @@ import { timezoneShape } from 'react-timezone';
 
 Default value: function() {}
 
-Arguments: timezone: [Timezone object](#timezone-object)
+Arguments: `timezone: Object` ([Timezone object](#timezone-object))
 
 Invoked when the user selects an item from the dropdown menu.
 
@@ -76,7 +76,7 @@ onTimezoneChange={(timezone) => console.log(`${timezone.city} - ${timezone.zoneN
 
 Default value: function() {}
 
-Arguments: isOpen: Boolean
+Arguments: `isOpen: Boolean`
 
 Invoked every time the dropdown menu's visibility changes (i.e. every time it is displayed/hidden).
 
@@ -164,3 +164,124 @@ Default value: 3
 
 The number of characters the user must enter before the dropdown opens displaying any
 matching timezone options.
+
+### Helper Functions
+A number of helper functions are provided for use in dealing with timezone values, searching and matching.
+
+`getAllTimezones`
+
+Arguments: None
+
+Returns an Array of all of the [Timezone objects](#timezone-object) used as the source of data
+by the TimezoneAutocomplete and other helper functions.
+
+`timezoneSearch`
+
+Arguments: `filterFields: Object`
+
+Returns an Array of [Timezone objects](#timezone-object) matching the search criteria provided in the filterFields
+argument.  The filterFields object should have as keys any of the properties in the [Timezone object](#timezone-object)
+with, as corresponding values, the string to search for in the respective field.  Any combination
+of the keys (city, zoneName, or zoneAbbr) may be used.
+
+For example:
+
+```javascript
+let matches;
+
+matches = timezoneSearch({ city: 'New' }); 
+/*
+[
+    { city: "New York", zoneName: "America/New_York", zoneAbbr: "EST" },
+    { city: "New Salem", zoneName: "America/North_Dakota/New_Salem", zoneAbbr: "CST" },
+    { city: "Canada/Newfoundland", zoneName: "Canada/Newfoundland", zoneAbbr: "NST" }
+]
+ */
+
+matches = timezoneSearch({ city: 'New', zoneName: 'America' }); 
+/*
+[
+    { city: "New York", zoneName: "America/New_York", zoneAbbr: "EST" },
+    { city: "New Salem", zoneName: "America/North_Dakota/New_Salem", zoneAbbr: "CST" }
+]
+ */
+
+matches = timezoneSearch({ city: 'New', zoneName: 'America', zoneAbbr: 'EST' }); 
+/*
+[
+    { city: "New York", zoneName: "America/New_York", zoneAbbr: "EST" }
+]
+ */
+```
+
+`guessUserTimezone`
+
+Arguments: None
+
+Returns the [Timezone object](#timezone-object) of the timezone it deduces the user to be in.
+
+```javascript
+const timezone = guessUserTimezone();
+console.log(`This user is in: ${timezone.city} - ${timezone.zoneAbbr}`);
+```
+
+`isTimezoneMatch`
+
+Arguments: `timezone: Object` ([Timezone object](#timezone-object)) `, searchValue: String, minLength: number (optional)`
+
+Returns true or false as to whether the searchValue is a match to the timezone.
+The optional minLength argument provides a the minimum length the searchValue must be before searching is allowed.
+
+```javascript
+const timezone = { city: "New York", zoneName: "America/New_York", zoneAbbr: "EST" };
+let isMatch;
+
+isMatch = isTimezoneMatch(timezone, 'New York');
+// true
+
+isMatch = isTimezoneMatch(timezone, 'EST');
+// true
+
+isMatch = isTimezoneMatch(timezone, 'Somewhere Else');
+// false
+
+isMatch = isTimezoneMatch(timezone, 'New', 5);
+// false
+
+isMatch = isTimezoneMatch(timezone, 'New York', 5);
+// true
+```
+
+`compareTimezones`
+
+Arguments: `timezone1: Object` ([Timezone object](#timezone-object))`, timezone2: Object` ([Timezone object](#timezone-object))
+
+Compares the city and zoneAbbr of the two provided timezones and returns:
+ * 1: when timezone1 is considered less than timezone2
+ *  -1: when timezone1 is considered greater than timezone2
+ * 0: when timezone1 and timezone2 are equal
+
+```javascript
+let comparison;
+
+comparison = compareTimezones(
+    { city: "Chicago", zoneName: "America/Chicago", zoneAbbr: "CST" }, 
+    { city: "New York", zoneName: "America/New_York", zoneAbbr: "EST" }
+);
+console.log(comparison);
+// 1
+
+comparison = compareTimezones(
+    { city: "Port-au-Prince", zoneName: "America/Port-au-Prince", zoneAbbr: "EST" }, 
+    { city: "New York", zoneName: "America/New_York", zoneAbbr: "EST" }
+);
+console.log(comparison);
+// -1
+
+comparison = compareTimezones(
+    { city: "New York", zoneName: "America/New_York", zoneAbbr: "EST" }, 
+    { city: "New York", zoneName: "America/New_York", zoneAbbr: "EST" }
+);
+console.log(comparison);
+// 0
+```
