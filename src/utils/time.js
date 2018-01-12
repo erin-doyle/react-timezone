@@ -8,7 +8,7 @@ import searchHelper from './search';
 
 const getMatchChecker = (timezoneToSearch, fieldsToFilterBy) => (
     filterField => (
-        searchHelper.isMatch(timezoneToSearch[filterField], fieldsToFilterBy[filterField])
+        searchHelper.isMatch(fieldsToFilterBy[filterField], timezoneToSearch[filterField])
     )
 );
 
@@ -41,7 +41,8 @@ const guessUserTz = () => {
     if (isMobile && supportsIntl) {
         // moment-timezone gives preference to the Intl API regardless of device type,
         // so unset global.Intl to trick moment-timezone into using its fallback
-        // see https://github.com/moment/moment-timezone/issues/441
+        // see https://github.com/moment/moment-timezone/issues/441 and
+        // see https://github.com/moment/moment-timezone/issues/517
         // TODO: Clean this up when that issue is resolved
         const globalIntl = global.Intl;
         global.Intl = undefined;
@@ -75,6 +76,15 @@ const isValueInCityOrZone = (timezone, searchValue, minLength = 1) => {
     );
 };
 
+/**
+ * Compares the city and zoneAbbr of the two provided timezones and returns:
+ *      1: when timezone1 has a city or zoneAbbr less than timezone2
+ *      -1: when timezone1 has a city or zoneAbbr greater than timezone2
+ *      0: when timezone1 and timezone2 are equal
+ * @param {object} timezone1
+ * @param {object} timezone2
+ * @return {number}
+ */
 const compareByCityAndZone = (timezone1, timezone2) => {
     const city1 = timezone1.city.toLowerCase();
     const zone1 = timezone1.zoneAbbr.toLowerCase();
