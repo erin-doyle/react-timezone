@@ -41,7 +41,8 @@ const guessUserTz = () => {
     if (isMobile && supportsIntl) {
         // moment-timezone gives preference to the Intl API regardless of device type,
         // so unset global.Intl to trick moment-timezone into using its fallback
-        // see https://github.com/moment/moment-timezone/issues/441
+        // see https://github.com/moment/moment-timezone/issues/441 and
+        // see https://github.com/moment/moment-timezone/issues/517
         // TODO: Clean this up when that issue is resolved
         const globalIntl = global.Intl;
         global.Intl = undefined;
