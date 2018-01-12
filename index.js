@@ -6,7 +6,7 @@ var timeHelper = require('./lib/utils/time').default;
 module.exports = {
     TimezoneAutocomplete: TimezoneAutocomplete,
     timezoneShape: timezoneShape,
-    getAllTimezones: () => timezoneData,
+    getAllTimezones: function () { return timezoneData; },
     timezoneSearch: timeHelper.tzSearch,
     guessUserTimezone: timeHelper.guessUserTz,
     isTimezoneMatch: timeHelper.isValueInCityOrZone,
