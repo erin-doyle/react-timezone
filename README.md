@@ -100,8 +100,8 @@ inputProps is commonly used for (but not limited to) placeholder, event handlers
 ```javascript
 inputProps={{
     placeholder: 'Enter a city or timezone',
-    onFocus: console.log('onFocus'),
-    onBlur: console.log('onBlur')
+    onFocus: () => console.log('onFocus'),
+    onBlur: () => console.log('onBlur')
 }}
 ```
 
