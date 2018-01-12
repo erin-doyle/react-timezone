@@ -5,5 +5,6 @@ module.exports = {
     transform: {
         '^.+\\.js$': 'babel-jest'
     },
-    verbose: true
+    verbose: true,
+    setupTestFrameworkScriptFile: '<rootDir>/testSetup.js'
 };

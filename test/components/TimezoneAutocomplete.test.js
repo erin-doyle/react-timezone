@@ -1,5 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
+import { EASTERN_TZ } from '../testUtils';
 
 import TimezoneAutocomplete, { formatTimezone, parseTimezone } from '../../src/components/TimezoneAutocomplete';
 
@@ -10,7 +11,7 @@ const mockPhrases = {
 const mockTimezone = {
     city: 'New York',
     zoneName: 'America/New_York',
-    zoneAbbr: 'EDT'
+    zoneAbbr: EASTERN_TZ
 };
 
 describe('TimezoneAutocomplete', () => {
@@ -45,8 +46,9 @@ describe('TimezoneAutocomplete', () => {
 describe('formatTimezone', () => {
     describe('when the timezone object is valid', () => {
         it('should return a string representation of the timezone object', () => {
+            const { city, zoneAbbr } = mockTimezone;
             const displayResult = formatTimezone(mockTimezone);
-            expect(displayResult).toBe('New York - EDT');
+            expect(displayResult).toBe(`${city} - ${zoneAbbr}`);
         });
     });
 

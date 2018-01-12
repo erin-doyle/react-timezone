@@ -33,7 +33,7 @@ const filterBy = (item, text, filterOptions) => {
             let value = item[field];
 
             if (typeof value !== 'string') {
-                console.warn(
+                console.warn( // eslint-disable-line
                     false,
                     `Fields passed to 'filterBy' should have string values. \
                     Value will be converted to a string; results may be unexpected.`
