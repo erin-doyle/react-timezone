@@ -1,12 +1,12 @@
 /**
- * True or false as to whether the input value is contained within the string.
- * @param {string} input
+ * True or false as to whether the search value is contained within the string.
+ * @param {string} searchValue
  * @param {string} string
  * @return {boolean}
  */
-const isMatch = (input, string) => {
-    if (!input || !string || typeof input !== 'string' || typeof string !== 'string') return false;
-    const valueToSearchFor = input.toLowerCase();
+const isMatch = (searchValue, string) => {
+    if (!searchValue || !string || typeof searchValue !== 'string' || typeof string !== 'string') return false;
+    const valueToSearchFor = searchValue.toLowerCase();
     const stringToSearchIn = string.toLowerCase();
 
     return stringToSearchIn.indexOf(valueToSearchFor) !== -1;
@@ -16,23 +16,23 @@ const isMatch = (input, string) => {
  * Predicate function to pass to a filter() Array function returning
  * true or false as to whether the text matches the item.
  * @param {string|Object} item - the item to search within
- * @param {string} text - the text to search for in the item
+ * @param {string} searchValue - the text to search for in the item
  * @param {Object} filterOptions - options used for filtering which include:
  *      {Array} fields - the fields to use to search against on the item
  *      {number} minLength - the minimum length the text must be before filtering is allowed
  * @return {boolean}
  */
-const filterBy = (item, text, filterOptions) => {
+const filterBy = (item, searchValue, filterOptions) => {
     const fields = filterOptions.fields.slice();
     const minLength = filterOptions.minLength || 1;
 
-    if (text.length < minLength) return false;
+    if (searchValue.length < minLength) return false;
 
     if (fields.length) {
         return fields.some((field) => {
-            let value = item[field];
+            let sectionToSearch = item[field];
 
-            if (typeof value !== 'string') {
+            if (typeof sectionToSearch !== 'string') {
                 console.warn( // eslint-disable-line
                     false,
                     `Fields passed to 'filterBy' should have string values. \
@@ -40,14 +40,14 @@ const filterBy = (item, text, filterOptions) => {
                 );
 
                 // Coerce to string since `toString` isn't null-safe.
-                value += '';
+                sectionToSearch += '';
             }
 
-            return isMatch(text, value);
+            return isMatch(searchValue, sectionToSearch);
         });
     }
 
-    return isMatch(text, item);
+    return isMatch(searchValue, item);
 };
 
 export default {
