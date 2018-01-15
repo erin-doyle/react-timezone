@@ -16,7 +16,10 @@
     "test:watch": "jest --watch",
     "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "storybook": "start-storybook -p 9001 -c .storybook",
-    "deploy": "gh-pages -d build",
+    "gh-pages:clean": "rimraf _gh-pages",
+    "gh-pages:build": "$(npm bin)/build-storybook -o _gh-pages",
+    "gh-pages:publish": "$(npm bin)/git-directory-deploy --directory _gh-pages",
+    "gh-pages": "npm run gh-pages:clean && npm run gh-pages:build && npm run gh-pages:publish",
     "tag": "git tag v$npm_package_version",
     "version:patch": "npm --no-git-tag-version version patch",
     "version:minor": "npm --no-git-tag-version version minor",
@@ -24,7 +27,7 @@
     "preversion": "npm run test",
     "postversion": "git commit package.json -m \"Version $npm_package_version\" && npm run tag && git push && git push --tags && npm publish --registry=https://registry.npmjs.org/",
     "prepublish": "npm run build",
-    "postpublish": "npm run deploy"
+    "postpublish": "npm run gh-pages"
   },
   "repository": {
     "type": "git",
@@ -42,7 +45,7 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "coveralls": "^3.0.0",
-    "gh-pages": "^1.1.0",
+    "git-directory-deploy": "^1.5.1",
     "invariant": "^2.2.2",
     "react-autocomplete": "^1.7.2"
   },
