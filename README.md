@@ -1,11 +1,21 @@
-[![Build Status](https://travis-ci.org/erin-doyle/react-timezone.svg?branch=master)](https://travis-ci.org/erin-doyle/react-timezone)
+# react-timezone <sup>[![Version Badge][npm-version-svg]][package-url]</sup>
 
-[![Coverage Status](https://coveralls.io/repos/github/erin-doyle/react-timezone/badge.svg)](https://coveralls.io/github/erin-doyle/react-timezone)
+[![Build Status][travis-svg]][travis-url]
+[![Coverage status][coveralls-svg]][coveralls-url]
+[![Downloads][downloads-image]][downloads-url]
 
-# react-timezone
-Timezone picker widget using React
+[![npm badge][npm-badge-png]][package-url]
+
+> Timezone picker widget using React.
 
 _TODO: add gif of TimezoneAutocomplete in action_
+
+
+
+
+
+
+
 
 ## Getting Started
 ### Local Demo
@@ -289,3 +299,13 @@ comparison = compareTimezones(
 console.log(comparison);
 // 0
 ```
+
+[package-url]: https://npmjs.org/package/@cashstar/react-timezone
+[npm-version-svg]: http://versionbadg.es/erin-doyle/react-timezone.svg
+[travis-svg]: https://travis-ci.org/erin-doyle/react-timezone.svg?branch=master
+[travis-url]: https://travis-ci.org/erin-doyle/react-timezone
+[coveralls-svg]: https://coveralls.io/repos/github/erin-doyle/react-timezone/badge.svg
+[coveralls-url]: https://coveralls.io/github/erin-doyle/react-timezone
+[npm-badge-png]: https://nodei.co/npm/@cashstar/react-timezone.png?downloads=true&stars=true
+[downloads-image]: http://img.shields.io/npm/dm/@cashstar/react-timezone.svg
+[downloads-url]: http://npm-stat.com/charts.html?package=@cashstar/react-timezone
