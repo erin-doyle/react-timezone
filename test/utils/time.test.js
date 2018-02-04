@@ -1,4 +1,6 @@
 /* eslint-disable max-len */ // lots of long test names and that's ok
+import { tz as momentTimezone } from 'moment-timezone';
+
 import timeHelper from '../../src/utils/time';
 import { EASTERN_TZ } from '../testUtils';
 
@@ -7,92 +9,260 @@ const mockTimezone = {
     zoneName: 'Some Zone',
     zoneAbbr: 'SOZ'
 };
+const newYorkTimezone = {
+    city: 'New York',
+    zoneAbbr: EASTERN_TZ,
+    zoneName: 'America/New_York'
+};
+const greenwhichTimezone = {
+    city: 'Greenwich',
+    zoneAbbr: 'GMT',
+    zoneName: 'Etc/Greenwich'
+};
+const mockMobileUserAgent = 'Mozilla/5.0 (Linux; Android 4.4.2; GT-I9515L Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36';
+const mockDesktopUserAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36';
 
 describe('Time utils', () => {
-    describe('tzSearch with city argument', () => {
-        it('should return an array of one timezone object containing the provided city', () => {
-            const cityToSearchFor = 'New York';
-            const result = timeHelper.tzSearch({ city: cityToSearchFor });
-            expect(result).toHaveLength(1);
-            expect(result[0].city).toEqual(cityToSearchFor);
-        });
-
-        it('should return an empty array when a timezone object does not exist containing the provided city', () => {
-            const cityToSearchFor = 'Some City that should not exist in the Timezone data';
-            const result = timeHelper.tzSearch({ city: cityToSearchFor });
-            expect(result).toHaveLength(0);
-        });
-    });
-
-    describe('tzSearch with name argument', () => {
-        it('should return the first timezone object containing the provided name', () => {
-            const nameToSearchFor = 'America/New_York';
-            const result = timeHelper.tzSearch({ zoneName: nameToSearchFor });
-            expect(result).toHaveLength(1);
-            expect(result[0].zoneName).toEqual(nameToSearchFor);
-        });
-
-        it('should return an empty array when a timezone object does not exist containing the provided name', () => {
-            const nameToSearchFor = 'Some Name that should not exist in the Timezone data';
-            const result = timeHelper.tzSearch({ zoneName: nameToSearchFor });
-            expect(result).toHaveLength(0);
-        });
-    });
-
-    describe('tzSearch with city and abbr arguments', () => {
-        it('should return the matching timezone object containing the provided city and zone abbreviation', () => {
-            const cityToSearchFor = 'New';
-            const zoneToSearchFor = EASTERN_TZ;
-            const result = timeHelper.tzSearch({ city: cityToSearchFor, zoneAbbr: zoneToSearchFor });
-            expect(result).toHaveLength(1);
-            expect(result[0].city).toContain(cityToSearchFor);
-            expect(result[0].zoneAbbr).toContain(zoneToSearchFor);
-        });
-
-        it('should return an empty array when a timezone object does not exist containing the provided city and zone abbreviation', () => {
-            const cityToSearchFor = 'Some City that should not exist in the Timezone data';
-            const zoneToSearchFor = 'ABCDEFG';
-            const result = timeHelper.tzSearch({ city: cityToSearchFor, zoneAbbr: zoneToSearchFor });
-            expect(result).toHaveLength(0);
-        });
-    });
-
-    describe('tzSearch with city and name arguments', () => {
-        it('should return the matching timezone object containing the provided city and zone name', () => {
-            const cityToSearchFor = 'New';
-            const zoneToSearchFor = 'America';
-            const result = timeHelper.tzSearch({ city: cityToSearchFor, zoneName: zoneToSearchFor });
-            expect(result).toHaveLength(2);
-            expect(result[0].city).toContain(cityToSearchFor);
-            expect(result[0].zoneName).toContain(zoneToSearchFor);
-        });
-
-        it('should return an empty array when a timezone object does not exist containing the provided city and zone name', () => {
-            const cityToSearchFor = 'Some City that should not exist in the Timezone data';
-            const zoneToSearchFor = 'ABCDEFG';
-            const result = timeHelper.tzSearch({ city: cityToSearchFor, zoneName: zoneToSearchFor });
-            expect(result).toHaveLength(0);
-        });
-    });
-
-    describe('tzSearch with filterFields that do not exist', () => {
-        it('should return an empty array if passed only filterFields that do not exist on the timezone object', () => {
-            const result = timeHelper.tzSearch({
-                fieldOneThatDoesntExist: 'someValue',
-                fieldTwoThatDoesntExist: 'someOtherValue'
+    describe('tzSearch', () => {
+        describe('with city argument', () => {
+            it('should return an array of one timezone object containing the provided city', () => {
+                const cityToSearchFor = 'New York';
+                const result = timeHelper.tzSearch({ city: cityToSearchFor });
+                expect(result).toHaveLength(1);
+                expect(result[0].city).toEqual(cityToSearchFor);
             });
-            expect(result).toHaveLength(0);
+
+            it('should return an empty array when a timezone object does not exist containing the provided city', () => {
+                const cityToSearchFor = 'Some City that should not exist in the Timezone data';
+                const result = timeHelper.tzSearch({ city: cityToSearchFor });
+                expect(result).toHaveLength(0);
+            });
         });
 
-        it('should return an empty array if passed any filterFields that do not exist on the timezone object along with any that do exist', () => {
-            const cityToSearchFor = 'New York';
-            const zoneToSearchFor = 'EDT';
-            const result = timeHelper.tzSearch({
-                fieldOneThatDoesntExist: 'someValue',
-                city: cityToSearchFor,
-                zoneAbbr: zoneToSearchFor
+        describe('with name argument', () => {
+            it('should return the first timezone object containing the provided name', () => {
+                const nameToSearchFor = 'America/New_York';
+                const result = timeHelper.tzSearch({ zoneName: nameToSearchFor });
+                expect(result).toHaveLength(1);
+                expect(result[0].zoneName).toEqual(nameToSearchFor);
             });
-            expect(result).toHaveLength(0);
+
+            it('should return an empty array when a timezone object does not exist containing the provided name', () => {
+                const nameToSearchFor = 'Some Name that should not exist in the Timezone data';
+                const result = timeHelper.tzSearch({ zoneName: nameToSearchFor });
+                expect(result).toHaveLength(0);
+            });
+        });
+
+        describe('with city and abbr arguments', () => {
+            it('should return the matching timezone object containing the provided city and zone abbreviation', () => {
+                const cityToSearchFor = 'New';
+                const zoneToSearchFor = EASTERN_TZ;
+                const result = timeHelper.tzSearch({ city: cityToSearchFor, zoneAbbr: zoneToSearchFor });
+                expect(result).toHaveLength(1);
+                expect(result[0].city).toContain(cityToSearchFor);
+                expect(result[0].zoneAbbr).toContain(zoneToSearchFor);
+            });
+
+            it('should return an empty array when a timezone object does not exist containing the provided city and zone abbreviation', () => {
+                const cityToSearchFor = 'Some City that should not exist in the Timezone data';
+                const zoneToSearchFor = 'ABCDEFG';
+                const result = timeHelper.tzSearch({ city: cityToSearchFor, zoneAbbr: zoneToSearchFor });
+                expect(result).toHaveLength(0);
+            });
+        });
+
+        describe('with city and name arguments', () => {
+            it('should return the matching timezone object containing the provided city and zone name', () => {
+                const cityToSearchFor = 'New';
+                const zoneToSearchFor = 'America';
+                const result = timeHelper.tzSearch({ city: cityToSearchFor, zoneName: zoneToSearchFor });
+                expect(result).toHaveLength(2);
+                expect(result[0].city).toContain(cityToSearchFor);
+                expect(result[0].zoneName).toContain(zoneToSearchFor);
+            });
+
+            it('should return an empty array when a timezone object does not exist containing the provided city and zone name', () => {
+                const cityToSearchFor = 'Some City that should not exist in the Timezone data';
+                const zoneToSearchFor = 'ABCDEFG';
+                const result = timeHelper.tzSearch({ city: cityToSearchFor, zoneName: zoneToSearchFor });
+                expect(result).toHaveLength(0);
+            });
+        });
+
+        describe('with filterFields that do not exist', () => {
+            it('should return an empty array if passed only filterFields that do not exist on the timezone object', () => {
+                const result = timeHelper.tzSearch({
+                    fieldOneThatDoesntExist: 'someValue',
+                    fieldTwoThatDoesntExist: 'someOtherValue'
+                });
+                expect(result).toHaveLength(0);
+            });
+
+            it('should return an empty array if passed any filterFields that do not exist on the timezone object along with any that do exist', () => {
+                const cityToSearchFor = 'New York';
+                const zoneToSearchFor = 'EDT';
+                const result = timeHelper.tzSearch({
+                    fieldOneThatDoesntExist: 'someValue',
+                    city: cityToSearchFor,
+                    zoneAbbr: zoneToSearchFor
+                });
+                expect(result).toHaveLength(0);
+            });
+        });
+    });
+
+    describe('guessUserTz', () => {
+        afterEach(() => {
+            jest.resetAllMocks();
+        });
+
+        describe('when the device is mobile and Intl is supported', () => {
+            const originalIntl = window.Intl;
+            const mockResolvedOptions = jest.fn();
+
+            beforeEach(() => {
+                window.navigator.userAgent = mockMobileUserAgent;
+                window.Intl.DateTimeFormat = jest.fn().mockImplementation(
+                    () => {
+                        resolvedOptions: mockResolvedOptions
+                    }
+                );
+            });
+
+            afterAll(() => {
+                window.Intl = originalIntl;
+            });
+
+            describe('when the user timezone is found', () => {
+                let guessedTimezone;
+
+                beforeEach(() => {
+                    jest.spyOn(momentTimezone, 'guess').mockImplementation(() => newYorkTimezone.zoneName);
+                    guessedTimezone = timeHelper.guessUserTz();
+                });
+
+                it('returns the user timezone', () => {
+                    expect(guessedTimezone).toEqual(newYorkTimezone);
+                });
+
+                it('does not call window.Intl.DateTimeFormat().resolvedOptions()', () => {
+                    expect(mockResolvedOptions).not.toHaveBeenCalled();
+                });
+            });
+
+            describe('when the user timezone is not found', () => {
+                let guessedTimezone;
+
+                beforeEach(() => {
+                    jest.spyOn(momentTimezone, 'guess').mockImplementation(() => undefined);
+                    guessedTimezone = timeHelper.guessUserTz();
+                });
+
+                it('returns the GMT timezone', () => {
+                    expect(guessedTimezone).toEqual(greenwhichTimezone);
+                });
+
+                it('does not call window.Intl.DateTimeFormat().resolvedOptions()', () => {
+                    expect(mockResolvedOptions).not.toHaveBeenCalled();
+                });
+            });
+
+            describe('when the user timezone is UTC', () => {
+                let guessedTimezone;
+
+                beforeEach(() => {
+                    jest.spyOn(momentTimezone, 'guess').mockImplementation(() => 'UTC');
+                    guessedTimezone = timeHelper.guessUserTz();
+                });
+
+                it('returns the GMT timezone', () => {
+                    expect(guessedTimezone).toEqual(greenwhichTimezone);
+                });
+
+                it('does not call window.Intl.DateTimeFormat().resolvedOptions()', () => {
+                    expect(mockResolvedOptions).not.toHaveBeenCalled();
+                });
+            });
+        });
+
+        describe('when the device is mobile and Intl is not supported', () => {
+            const originalIntl = window.Intl;
+
+            beforeEach(() => {
+                window.navigator.userAgent = mockMobileUserAgent;
+                window.Intl = undefined;
+            });
+
+            afterAll(() => {
+                window.Intl = originalIntl;
+            });
+
+            describe('when the user timezone is found', () => {
+                beforeEach(() => {
+                    jest.spyOn(momentTimezone, 'guess').mockImplementation(() => newYorkTimezone.zoneName);
+                });
+
+                it('returns the user timezone', () => {
+                    expect(timeHelper.guessUserTz()).toEqual(newYorkTimezone);
+                });
+            });
+
+            describe('when the user timezone is not found', () => {
+                beforeEach(() => {
+                    jest.spyOn(momentTimezone, 'guess').mockImplementation(() => undefined);
+                });
+
+                it('returns the GMT timezone', () => {
+                    expect(timeHelper.guessUserTz()).toEqual(greenwhichTimezone);
+                });
+            });
+
+            describe('when the user timezone is UTC', () => {
+                beforeEach(() => {
+                    jest.spyOn(momentTimezone, 'guess').mockImplementation(() => 'UTC');
+                });
+
+                it('returns the GMT timezone', () => {
+                    expect(timeHelper.guessUserTz()).toEqual(greenwhichTimezone);
+                });
+            });
+        });
+
+        describe('when the device is not mobile', () => {
+            beforeEach(() => {
+                window.navigator.userAgent = mockDesktopUserAgent;
+            });
+
+            describe('when the user timezone is found', () => {
+                beforeEach(() => {
+                    jest.spyOn(momentTimezone, 'guess').mockImplementation(() => newYorkTimezone.zoneName);
+                });
+
+                it('returns the user timezone', () => {
+                    expect(timeHelper.guessUserTz()).toEqual(newYorkTimezone);
+                });
+            });
+
+            describe('when the user timezone is not found', () => {
+                beforeEach(() => {
+                    jest.spyOn(momentTimezone, 'guess').mockImplementation(() => undefined);
+                });
+
+                it('returns the GMT timezone', () => {
+                    expect(timeHelper.guessUserTz()).toEqual(greenwhichTimezone);
+                });
+            });
+
+            describe('when the user timezone is UTC', () => {
+                beforeEach(() => {
+                    jest.spyOn(momentTimezone, 'guess').mockImplementation(() => 'UTC');
+                });
+
+                it('returns the GMT timezone', () => {
+                    expect(timeHelper.guessUserTz()).toEqual(greenwhichTimezone);
+                });
+            });
         });
     });
 

@@ -1,5 +1,5 @@
 node_modules/*
-**/tests/*
+**/test/*
 **/__mocks__/*
 lib/
 .storybook/
