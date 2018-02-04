@@ -30,24 +30,31 @@ const guessUserTz = () => {
     // User-Agent sniffing is not always reliable, but is the recommended technique
     // for determining whether or not we're on a mobile device according to MDN
     // see https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#Mobile_Tablet_or_Desktop
-    const isMobile = global.navigator !== undefined
-        ? global.navigator.userAgent.match(/Mobi/)
+    const isMobile = typeof window.navigator !== 'undefined'
+        ? !!window.navigator.userAgent.match(/Mobi/)
         : false;
 
-    const supportsIntl = global.Intl !== undefined;
+    const supportsIntl = window.Intl && typeof window.Intl === 'object';
 
     let userTz;
 
     if (isMobile && supportsIntl) {
         // moment-timezone gives preference to the Intl API regardless of device type,
-        // so unset global.Intl to trick moment-timezone into using its fallback
+        // so unset window.Intl.DateTimeFormat().resolvedOptions() to trick moment-timezone into using its fallback
         // see https://github.com/moment/moment-timezone/issues/441 and
         // see https://github.com/moment/moment-timezone/issues/517
         // TODO: Clean this up when that issue is resolved
-        const globalIntl = global.Intl;
-        global.Intl = undefined;
+        const originalDateTimeFormat = window.Intl.DateTimeFormat;
+
+        window.Intl.DateTimeFormat = function newDateTimeFormat() {
+            return {
+                resolvedOptions() { return {}; }
+            };
+        };
+
         userTz = moment.tz.guess();
-        global.Intl = globalIntl;
+
+        window.Intl.DateTimeFormat = originalDateTimeFormat;
     } else {
         userTz = moment.tz.guess();
     }
