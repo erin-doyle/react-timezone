@@ -15,9 +15,9 @@ const newYorkTimezone = {
     zoneName: 'America/New_York'
 };
 const greenwhichTimezone = {
-    city: 'Greenwich',
-    zoneAbbr: 'GMT',
-    zoneName: 'Etc/Greenwich'
+    city: 'UTC',
+    zoneAbbr: 'UTC',
+    zoneName: 'Etc/UTC'
 };
 const mockMobileUserAgent = 'Mozilla/5.0 (Linux; Android 4.4.2; GT-I9515L Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/30.0.0.0 Mobile Safari/537.36';
 const mockDesktopUserAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36';
@@ -155,7 +155,7 @@ describe('Time utils', () => {
                     guessedTimezone = timeHelper.guessUserTz();
                 });
 
-                it('returns the GMT timezone', () => {
+                it('returns the UTC timezone', () => {
                     expect(guessedTimezone).toEqual(greenwhichTimezone);
                 });
 
@@ -172,7 +172,7 @@ describe('Time utils', () => {
                     guessedTimezone = timeHelper.guessUserTz();
                 });
 
-                it('returns the GMT timezone', () => {
+                it('returns the UTC timezone', () => {
                     expect(guessedTimezone).toEqual(greenwhichTimezone);
                 });
 
@@ -209,7 +209,7 @@ describe('Time utils', () => {
                     jest.spyOn(momentTimezone, 'guess').mockImplementation(() => undefined);
                 });
 
-                it('returns the GMT timezone', () => {
+                it('returns the UTC timezone', () => {
                     expect(timeHelper.guessUserTz()).toEqual(greenwhichTimezone);
                 });
             });
@@ -219,7 +219,7 @@ describe('Time utils', () => {
                     jest.spyOn(momentTimezone, 'guess').mockImplementation(() => 'UTC');
                 });
 
-                it('returns the GMT timezone', () => {
+                it('returns the UTC timezone', () => {
                     expect(timeHelper.guessUserTz()).toEqual(greenwhichTimezone);
                 });
             });
@@ -245,7 +245,7 @@ describe('Time utils', () => {
                     jest.spyOn(momentTimezone, 'guess').mockImplementation(() => undefined);
                 });
 
-                it('returns the GMT timezone', () => {
+                it('returns the UTC timezone', () => {
                     expect(timeHelper.guessUserTz()).toEqual(greenwhichTimezone);
                 });
             });
@@ -255,7 +255,7 @@ describe('Time utils', () => {
                     jest.spyOn(momentTimezone, 'guess').mockImplementation(() => 'UTC');
                 });
 
-                it('returns the GMT timezone', () => {
+                it('returns the UTC timezone', () => {
                     expect(timeHelper.guessUserTz()).toEqual(greenwhichTimezone);
                 });
             });

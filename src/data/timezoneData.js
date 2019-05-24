@@ -7,16 +7,26 @@ moment.tz.load({ version: 'latest', zones: [], links: [] });
 
 const tzNames = (() => {
     //  We want to subset the existing timezone data as much as possible, both for efficiency
-    //  and to avoid confusing the user. Here, we focus on removing reduntant timezone names
+    //  and to avoid confusing the user. Here, we focus on removing redundant timezone names
     //  and timezone names for timezones we don't necessarily care about, like Antarctica, and
     //  special timezone names that exist for convenience.
     const scrubbedPrefixes = ['Antarctica', 'Arctic', 'Chile'];
     const scrubbedSuffixes = ['ACT', 'East', 'Knox_IN', 'LHI', 'North', 'NSW', 'South', 'West'];
 
-    return moment.tz.names()
-        .filter(name => name.indexOf('/') >= 0)
-        .filter(name => !scrubbedPrefixes.indexOf(name.split('/')[0]) >= 0)
-        .filter(name => !scrubbedSuffixes.indexOf(name.split('/').slice(-1)[0]) >= 0);
+    const getZoneName = zone => zone.split('|')[0];
+    const onlyCanonicalZones = zone => zone.indexOf('/') >= 0;
+    const nonBlacklistedPrefixes = zone => !(scrubbedPrefixes.indexOf(zone.split('/')[0]) >= 0);
+    const nonBlacklistedSuffixes = zone => !(scrubbedSuffixes.indexOf(zone.split('/').slice(-1)[0]) >= 0);
+
+    // Filter using _zones in this manner in order to reduce the number of duplicated and deprecated timezone names
+    // until moment-timezone provides a better way: https://github.com/moment/moment-timezone/issues/227
+    return Object.values(moment.tz._zones) // eslint-disable-line no-underscore-dangle
+        .map(getZoneName)
+        .filter(zone =>
+            onlyCanonicalZones(zone)
+            && nonBlacklistedPrefixes(zone)
+            && nonBlacklistedSuffixes(zone)
+        );
 })();
 
 // We need a human-friendly city name for each timezone identifier
