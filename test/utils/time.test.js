@@ -123,11 +123,7 @@ describe('Time utils', () => {
 
             beforeEach(() => {
                 window.navigator.userAgent = mockMobileUserAgent;
-                window.Intl.DateTimeFormat = jest.fn().mockImplementation(
-                    () => {
-                        resolvedOptions: mockResolvedOptions
-                    }
-                );
+                window.Intl.DateTimeFormat = jest.fn();
             });
 
             afterAll(() => {
