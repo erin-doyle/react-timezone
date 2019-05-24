@@ -2,9 +2,7 @@ import tzMaps from '../../src/data/timezoneData';
 import searchHelper from '../../src/utils/search';
 import {
     EASTERN_TZ,
-    PACIFIC_TZ,
-    CENTRAL_TZ,
-    NEWFOUNDLAND_TZ
+    CENTRAL_TZ
 } from '../testUtils';
 
 describe('Search utils', () => {
@@ -93,9 +91,7 @@ describe('Search utils', () => {
 
             expect(results).toEqual([
                 { city: 'New York', zoneName: 'America/New_York', zoneAbbr: EASTERN_TZ },
-                { city: 'New Salem', zoneName: 'America/North_Dakota/New_Salem', zoneAbbr: CENTRAL_TZ },
-                { city: 'Canada/Newfoundland', zoneName: 'Canada/Newfoundland', zoneAbbr: NEWFOUNDLAND_TZ },
-                { city: 'US/Pacific-New', zoneName: 'US/Pacific-New', zoneAbbr: PACIFIC_TZ }
+                { city: 'New Salem', zoneName: 'America/North_Dakota/New_Salem', zoneAbbr: CENTRAL_TZ }
             ]);
         });
 
@@ -127,9 +123,7 @@ describe('Search utils', () => {
 
             expect(results).toEqual([
                 'New York',
-                'New Salem',
-                'Canada/Newfoundland',
-                'US/Pacific-New'
+                'New Salem'
             ]);
         });
 

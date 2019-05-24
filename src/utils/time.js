@@ -59,8 +59,8 @@ const guessUserTz = () => {
         userTz = moment.tz.guess();
     }
 
-    // return GMT if we're unable to guess or the system is using UTC
-    if (!userTz || userTz === 'UTC') return head(tzSearch({ zoneName: 'Etc/Greenwich' }));
+    // return UTC if we're unable to guess or the system is using UTC
+    if (!userTz || userTz === 'UTC') return head(tzSearch({ zoneName: 'Etc/UTC' }));
 
     return head(tzSearch({ zoneName: userTz }));
 };
