@@ -13,6 +13,7 @@
     "test:jest": "jest",
     "test:coverage": "jest --coverage",
     "test:nocache": "jest --no-cache",
+    "test:security": "snyk test",
     "test:watch": "jest --watch",
     "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "storybook": "start-storybook -p 9001 -c .storybook",
@@ -44,7 +45,7 @@
   "homepage": "https://github.com/erin-doyle/react-timezone#readme",
   "dependencies": {
     "classnames": "^2.2.5",
-    "coveralls": "^3.0.0",
+    "coveralls": "^3.0.3",
     "git-directory-deploy": "^1.5.1",
     "invariant": "^2.2.2",
     "react-autocomplete": "^1.7.2"
@@ -81,7 +82,8 @@
     "react-dom": "^15.6.2",
     "react-test-renderer": "^15.6.2",
     "rimraf": "^2.6.1",
-    "semver": "^5.4.1"
+    "semver": "^5.4.1",
+    "snyk": "^1.167.2"
   },
   "peerDependencies": {
     "moment": "^2.18.0",
