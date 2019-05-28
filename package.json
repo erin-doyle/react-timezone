@@ -27,7 +27,7 @@
     "version:major": "npm --no-git-tag-version version major",
     "preversion": "npm run test",
     "postversion": "git commit package.json -m \"Version $npm_package_version\" && npm run tag && git push && git push --tags && npm publish --registry=https://registry.npmjs.org/",
-    "prepublish": "npm run build",
+    "prepublishOnly": "npm run build",
     "postpublish": "npm run gh-pages"
   },
   "repository": {
