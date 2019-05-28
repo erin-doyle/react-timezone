@@ -13,7 +13,7 @@ const tzNames = (() => {
     const scrubbedPrefixes = ['Antarctica', 'Arctic', 'Chile'];
     const scrubbedSuffixes = ['ACT', 'East', 'Knox_IN', 'LHI', 'North', 'NSW', 'South', 'West'];
 
-    const getZoneName = zone => zone.split('|')[0];
+    const getZoneName = zone => ((typeof zone === 'string') ? zone.split('|')[0] : zone.name);
     const onlyCanonicalZones = zone => zone.indexOf('/') >= 0;
     const nonBlacklistedPrefixes = zone => !(scrubbedPrefixes.indexOf(zone.split('/')[0]) >= 0);
     const nonBlacklistedSuffixes = zone => !(scrubbedSuffixes.indexOf(zone.split('/').slice(-1)[0]) >= 0);

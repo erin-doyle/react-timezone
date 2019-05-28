@@ -1,7 +1,7 @@
-import moment from 'moment';
+import moment from 'moment-timezone';
 
-const IS_DAYLIGHT_SAVING = moment().isDST();
-export const EASTERN_TZ = IS_DAYLIGHT_SAVING ? 'EDT' : 'EST';
-export const PACIFIC_TZ = IS_DAYLIGHT_SAVING ? 'PDT' : 'PST';
-export const CENTRAL_TZ = IS_DAYLIGHT_SAVING ? 'CDT' : 'CST';
-export const NEWFOUNDLAND_TZ = IS_DAYLIGHT_SAVING ? 'NDT' : 'NST';
+const isDaylightSaving = timezone => moment().tz(timezone).isDST();
+export const EASTERN_TZ = isDaylightSaving('America/New_York') ? 'EDT' : 'EST';
+export const PACIFIC_TZ = isDaylightSaving('America/Los_Angeles') ? 'PDT' : 'PST';
+export const CENTRAL_TZ = isDaylightSaving('America/Chicago') ? 'CDT' : 'CST';
+export const NEWFOUNDLAND_TZ = isDaylightSaving('America/St_Johns') ? 'NDT' : 'NST';

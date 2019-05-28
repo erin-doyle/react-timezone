@@ -2,18 +2,17 @@ language: node_js
 
 node_js:
   - "stable"
+  - "10"
   - "8"
-  - "7"
   - "6"
-  - "4"
 
 script:
-  - yarn run lint
+  - npm run lint
   # coveralls will run test:jest
-  - yarn run coveralls
-  - yarn run build
+  - npm run coveralls
+  - npm run build
 
-cache: yarn
+cache: npm
 
 matrix:
   fast_finish: true
