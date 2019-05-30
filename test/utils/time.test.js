@@ -164,6 +164,23 @@ describe('Time utils', () => {
                 });
             });
 
+            describe('when the user timezone is valid but filtered out of the timezone map', () => {
+                let guessedTimezone;
+
+                beforeEach(() => {
+                    jest.spyOn(momentTimezone, 'guess').mockImplementation(() => 'Antarctica/Vostok');
+                    guessedTimezone = timeHelper.guessUserTz();
+                });
+
+                it('returns the UTC timezone', () => {
+                    expect(guessedTimezone).toEqual(greenwhichTimezone);
+                });
+
+                it('does not call window.Intl.DateTimeFormat().resolvedOptions()', () => {
+                    expect(mockResolvedOptions).not.toHaveBeenCalled();
+                });
+            });
+
             describe('when the user timezone is UTC', () => {
                 let guessedTimezone;
 

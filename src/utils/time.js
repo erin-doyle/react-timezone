@@ -59,10 +59,14 @@ const guessUserTz = () => {
         userTz = moment.tz.guess();
     }
 
-    // return UTC if we're unable to guess or the system is using UTC
-    if (!userTz || userTz === 'UTC') return head(tzSearch({ zoneName: 'Etc/UTC' }));
+    if (userTz && userTz !== 'UTC') {
+        const tzMatches = tzSearch({ zoneName: userTz });
 
-    return head(tzSearch({ zoneName: userTz }));
+        if (tzMatches.length) return head(tzMatches);
+    }
+
+    // return UTC if we're unable to guess or the system is using UTC
+    return head(tzSearch({ zoneName: 'Etc/UTC' }));
 };
 
 /**
