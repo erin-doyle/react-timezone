@@ -1,13 +1,13 @@
 {
-    "presets": [
-        ["env", {
-            "targets": {
-                "browsers": "last 2 versions"
-            },
-            "modules": false
-        }],
-        "react",
-        "stage-2",
-        "es2015"
-    ]
+  // This file is only for top-level transpilation outside of src,
+  //  ex: build scripts, test helpers, etc.
+  // You should use/modify the .babelrc local to the src dir to
+  //  change how this code is transpiled for browsers.
+  "presets": [
+    ["@babel/preset-env", {
+      "targets": {
+        "node": "current"
+      }
+    }]
+  ]
 }

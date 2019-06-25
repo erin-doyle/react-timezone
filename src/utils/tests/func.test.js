@@ -1,4 +1,4 @@
-import { isSeq, head, tail, last } from '../../src/utils/func';
+import { isSeq, head, tail, last } from '../func';
 
 
 describe('Functional utils', () => {
