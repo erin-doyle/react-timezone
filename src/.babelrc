@@ -1,0 +1,20 @@
+{
+    "presets": [
+        ["@babel/preset-env", {
+            "targets": {
+                "browsers": [
+                    ">0.25%", "not dead",
+                    "unreleased Chrome versions",
+                    "Firefox 65",
+                    "IE 11",
+                    "Last 2 Edge Versions",
+                    "Safari 9",
+                    "Last 2 FirefoxAndroid Versions",
+                    "Last 2 Android Versions",
+                    "Last 2 Samsung Versions"
+                ]
+            }
+        }],
+        "@babel/preset-react"
+    ]
+}

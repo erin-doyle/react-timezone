@@ -1,8 +1,8 @@
 /* eslint-disable max-len */ // lots of long test names and that's ok
 import { tz as momentTimezone } from 'moment-timezone';
 
-import timeHelper from '../../src/utils/time';
-import { EASTERN_TZ } from '../testUtils';
+import timeHelper from '../time';
+import { EASTERN_TZ } from '../../../testUtils';
 
 const mockTimezone = {
     city: 'Some City',

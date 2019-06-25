@@ -6,6 +6,15 @@ import { head } from './func';
 import searchHelper from './search';
 
 
+// User-Agent sniffing is not always reliable, but is the recommended technique
+// for determining whether or not we're on a mobile device according to MDN
+// see https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#Mobile_Tablet_or_Desktop
+const isMobile = typeof window.navigator !== 'undefined'
+    ? !!window.navigator.userAgent.match(/Mobi/)
+    : false;
+
+const supportsIntl = window.Intl && typeof window.Intl === 'object';
+
 const getMatchChecker = (timezoneToSearch, fieldsToFilterBy) => (
     filterField => (
         searchHelper.isMatch(fieldsToFilterBy[filterField], timezoneToSearch[filterField])
@@ -27,15 +36,6 @@ const tzSearch = filterFields => (
 );
 
 const guessUserTz = () => {
-    // User-Agent sniffing is not always reliable, but is the recommended technique
-    // for determining whether or not we're on a mobile device according to MDN
-    // see https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#Mobile_Tablet_or_Desktop
-    const isMobile = typeof window.navigator !== 'undefined'
-        ? !!window.navigator.userAgent.match(/Mobi/)
-        : false;
-
-    const supportsIntl = window.Intl && typeof window.Intl === 'object';
-
     let userTz;
 
     if (isMobile && supportsIntl) {

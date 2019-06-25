@@ -1,8 +1,8 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { EASTERN_TZ } from '../testUtils';
+import { EASTERN_TZ } from '../../../testUtils';
 
-import TimezoneAutocomplete, { formatTimezone, parseTimezone } from '../../src/components/TimezoneAutocomplete';
+import TimezoneAutocomplete, { formatTimezone, parseTimezone } from '../TimezoneAutocomplete';
 
 
 const mockPhrases = {

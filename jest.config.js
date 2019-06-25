@@ -1,10 +1,10 @@
 module.exports = {
     testMatch: [
-        '<rootDir>/test/**/*.test.js'
+        '<rootDir>/src/**/*.test.js'
     ],
     transform: {
         '^.+\\.js$': 'babel-jest'
     },
     verbose: true,
-    setupTestFrameworkScriptFile: '<rootDir>/test/testSetup.js'
+    setupFilesAfterEnv: ['<rootDir>/testSetup.js']
 };

@@ -1,9 +1,9 @@
-import tzMaps from '../../src/data/timezoneData';
-import searchHelper from '../../src/utils/search';
+import tzMaps from '../../data/timezoneData';
+import searchHelper from '../search';
 import {
     EASTERN_TZ,
     CENTRAL_TZ
-} from '../testUtils';
+} from '../../../testUtils';
 
 describe('Search utils', () => {
     describe('isMatch', () => {
