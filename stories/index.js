@@ -22,8 +22,8 @@ const LabelDecorator = storyFn => (
 );
 
 storiesOf('TimezoneAutocomplete Component', module)
-    .addDecorator(withKnobs)
     .addDecorator(LabelDecorator)
+    .addDecorator(withKnobs)
     .add('default', () => (
         <TimezoneAutocomplete
             onTimezoneChange={action('onTimezoneChange')}
@@ -71,7 +71,7 @@ storiesOf('TimezoneAutocomplete Component', module)
                 color: 'purple',
                 fontWeight: 'bold',
                 fontSize: '0.9rem',
-                lineHeight: '2',
+                lineHeight: '2'
             }}
         />
     ))
