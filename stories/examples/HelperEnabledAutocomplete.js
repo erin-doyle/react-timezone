@@ -84,7 +84,9 @@ class HelperEnabledAutocomplete extends React.PureComponent {
 
         return (
             <Autocomplete
-                id="timezone-picker-search-input"
+                inputProps={{
+                    id: 'timezone-picker-search-input'
+                }}
                 onChange={(event, value) => this.setState({ inputValue: value })}
                 onSelect={value => this.handleTimezoneChange(value)}
                 menuStyle={menuStyle}
