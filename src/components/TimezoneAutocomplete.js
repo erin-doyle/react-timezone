@@ -84,12 +84,14 @@ class TimezoneAutocomplete extends React.PureComponent {
 
         return (
             <Autocomplete
-                id="timezone-picker-search-input"
                 onChange={(event, value) => this.setState({ timezone: value })}
                 onSelect={value => this.handleTimezoneChange(value)}
                 onMenuVisibilityChange={onMenuVisibilityChange}
                 menuStyle={menuStyle}
-                inputProps={inputProps}
+                inputProps={{
+                    id: 'timezone-picker-search-input',
+                    ...inputProps
+                }}
                 wrapperProps={wrapperProps}
                 items={timeHelper.tzMaps}
                 shouldItemRender={this.shouldItemRenderAfterMinLengthEntered}
