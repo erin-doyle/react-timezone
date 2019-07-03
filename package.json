@@ -28,7 +28,9 @@
     "preversion": "npm run test",
     "postversion": "git commit package.json package-lock.json -m \"Version $npm_package_version\" && npm run tag && git push && git push --tags && npm publish --registry=https://registry.npmjs.org/",
     "prepublishOnly": "npm run build",
-    "postpublish": "npm run gh-pages"
+    "postpublish": "npm run gh-pages",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -51,7 +53,8 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-autocomplete": "^1.7.2",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.8.6",
+    "snyk": "^1.189.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
@@ -81,13 +84,13 @@
     "moment-timezone": "^0.5.25",
     "react-test-renderer": "^16.8.6",
     "rimraf": "^2.6.1",
-    "semver": "^5.4.1",
-    "snyk": "^1.167.2"
+    "semver": "^5.4.1"
   },
   "peerDependencies": {
     "moment": "^2.18.0",
     "moment-timezone": "^0.5.0",
     "react": "^15.0.0 || ^16.1.0",
     "react-dom": "^15.0.0 || ^16.1.0"
-  }
+  },
+  "snyk": true
 }
