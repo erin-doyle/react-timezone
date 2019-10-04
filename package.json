@@ -54,7 +54,7 @@
     "react": "^16.8.6",
     "react-autocomplete": "^1.7.2",
     "react-dom": "^16.8.6",
-    "snyk": "^1.230.5"
+    "snyk": "^1.231.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
