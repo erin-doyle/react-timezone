@@ -79,7 +79,7 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-react": "^7.3.0",
     "jest": "^24.8.0",
-    "jsdom": "^11.2.0",
+    "jsdom": "^16.5.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.25",
     "react-test-renderer": "^16.8.6",
